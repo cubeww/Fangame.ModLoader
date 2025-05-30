@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Fangame.ModLoader": {
+      "commandName": "Project",
+      "commandLineArgs": "\"D:\\Games\\I Wanna\\I wanna be the Kantoku Needle\\I wanna be the Kantoku Needle.exe\" iwpo"
+    }
+  }
+}

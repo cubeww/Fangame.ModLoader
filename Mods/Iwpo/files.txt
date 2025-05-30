@@ -1,0 +1,6 @@
+Iwpo.dll
+dialog.ext8
+http.ext8
+font.font8
+chatbox.snd8
+saved.snd8
