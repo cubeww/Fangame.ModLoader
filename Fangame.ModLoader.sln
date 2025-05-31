@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UndertaleModLib", "Undertal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Underanalyzer", "UndertaleModTool\Underanalyzer\Underanalyzer\Underanalyzer.csproj", "{69A5B990-A618-48D4-D9D3-5A9F093BDCEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Godmode", "Mods\Godmode\Godmode.csproj", "{A945B94C-F1BF-4237-A6CA-B2EBAFEAEF24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,12 +37,17 @@ Global
 		{69A5B990-A618-48D4-D9D3-5A9F093BDCEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69A5B990-A618-48D4-D9D3-5A9F093BDCEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69A5B990-A618-48D4-D9D3-5A9F093BDCEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A945B94C-F1BF-4237-A6CA-B2EBAFEAEF24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A945B94C-F1BF-4237-A6CA-B2EBAFEAEF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A945B94C-F1BF-4237-A6CA-B2EBAFEAEF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A945B94C-F1BF-4237-A6CA-B2EBAFEAEF24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4045C446-077F-4718-B7AF-837B7738C810} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A945B94C-F1BF-4237-A6CA-B2EBAFEAEF24} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F79D99BC-A87E-4EB3-8BCC-874B60CC2FD6}

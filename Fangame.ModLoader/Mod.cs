@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using Fangame.ModLoader.GM8;
+using UndertaleModLib;
 
 namespace Fangame.ModLoader;
 
@@ -12,7 +14,21 @@ public abstract class Mod
     public Modder Modder = null!;
     public string ModDirectory = null!;
 
-    public abstract void Load();
+    public virtual void Load()
+    {
+    }
+
+    public virtual void ModGM8(GM8Data data)
+    {
+    }
+
+    public virtual void ModGMS(UndertaleData data)
+    {
+    }
+
+    public virtual void ModExecutable(FileStream stream)
+    {
+    }
 
     public T LoadConfig<T>(T defaultValue, string configFileName = "Config.json")
     {
@@ -36,10 +52,4 @@ public abstract class Mod
         string destFilePath = Path.Combine(Modder.RunningDirectory, fileName);
         File.Copy(sourceFilePath, destFilePath, true);
     }
-
-    public void GetFileBytes(string fileName)
-    {
-
-    }
-
 }

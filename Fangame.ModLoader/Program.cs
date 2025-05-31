@@ -7,15 +7,19 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        Console.WriteLine("===================================");
         Console.WriteLine("Fangame.ModLoader v0.1.0 by NyaCube");
         Console.WriteLine("===================================");
-        var rootCommand = new RootCommand("Load the mods and run the specified game file.");
-        var executablePath = new Argument<string>("iwanna.exe", "Executable file path of fangame.");
-        var modNames = new Argument<string[]>("mods", "Mod name to load");
-        rootCommand.Add(executablePath);
-        rootCommand.Add(modNames);
-        rootCommand.SetHandler(ModAndRun, executablePath, modNames);
-        rootCommand.Invoke(args);
+
+        //var rootCommand = new RootCommand("Load the mods and run the specified game file.");
+        //var executablePath = new Argument<string>("iwanna.exe", "Executable file path of fangame.");
+        //var modNames = new Argument<string[]>("mods", "Mod name to load");
+        //rootCommand.Add(executablePath);
+        //rootCommand.Add(modNames);
+        //rootCommand.SetHandler(ModAndRun, executablePath, modNames);
+        //rootCommand.Invoke(args);
+
+        ModAndRun(@"D:\Games\I Wanna\I Wanna Be the Arcfox Needle Ver1.05\I Wanna Be the Arcfox Needle.exe", ["Godmode"]);
     }
 
     static void ModAndRun(string executablePath, string[] modNames)

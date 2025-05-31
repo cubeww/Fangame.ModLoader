@@ -14,18 +14,9 @@ public class IwpoMod : Mod
     public override void Load()
     {
         Config = LoadConfig(new Config());
-
-        if (Modder.GM8Data != null)
-        {
-            ModGM8(Modder.GM8Data);
-        }
-        else if (Modder.UndertaleData != null)
-        {
-            ModGMS(Modder.UndertaleData);
-        }
     }
 
-    private void ModGM8(GM8Data data)
+    public override void ModGM8(GM8Data data)
     {
         GameId = GetGameDataHash();
         GameName = Path.GetFileNameWithoutExtension(Modder.ExecutablePath);
@@ -123,9 +114,8 @@ public class IwpoMod : Mod
         }
     }
 
-    private void ModGMS(UndertaleData data)
+    public override void ModGMS(UndertaleData data)
     {
-
     }
 
     private string GetGameDataHash()

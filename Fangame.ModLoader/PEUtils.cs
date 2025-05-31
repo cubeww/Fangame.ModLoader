@@ -1,4 +1,6 @@
-﻿namespace Fangame.ModLoader;
+﻿#pragma warning disable CS0649
+
+namespace Fangame.ModLoader;
 
 using BYTE = byte;
 using DWORD = int;

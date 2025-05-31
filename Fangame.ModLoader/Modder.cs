@@ -217,9 +217,9 @@ public class Modder
             Directory.CreateDirectory(ModsDirectory);
         }
 
-        foreach (string modDirectory in Directory.GetDirectories(ModsDirectory))
+        foreach (string modName in ModNames)
         {
-            string modName = Path.GetFileName(modDirectory);
+            string modDirectory = Path.Combine(ModsDirectory, modName);
             Assembly modAssembly = Assembly.LoadFile(Path.Combine(modDirectory, $"{modName}.dll"));
             Type? modType = modAssembly.GetTypes().Where(x => typeof(Mod).IsAssignableFrom(x)).FirstOrDefault();
             if (modType != null)
@@ -238,6 +238,14 @@ public class Modder
         {
             Console.WriteLine($"modding: {mod.GetType().Assembly.GetName().Name}");
             mod.Load();
+            if (GM8Data != null)
+            {
+                mod.ModGM8(GM8Data);
+            }
+            else if (UndertaleData != null)
+            {
+                mod.ModGMS(UndertaleData);
+            }
         }
     }
 
@@ -258,6 +266,14 @@ public class Modder
             {
                 using FileStream fs = File.Create(RunningGameDataPath);
                 UndertaleIO.Write(fs, UndertaleData);
+            }
+        }
+
+        using (FileStream fs = File.OpenWrite(RunningExecutablePath))
+        {
+            foreach (var mod in Mods)
+            {
+                mod.ModExecutable(fs);
             }
         }
     }

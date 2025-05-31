@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="powershell ../copyfiles.ps1" />
+		<Exec Command="powershell ../copyfiles.ps1" />
 	</Target>
 
 </Project>
