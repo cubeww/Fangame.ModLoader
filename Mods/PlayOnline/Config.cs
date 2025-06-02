@@ -1,4 +1,4 @@
-﻿namespace Iwpo;
+﻿namespace PlayOnline;
 
 internal class Config
 {

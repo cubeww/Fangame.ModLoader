@@ -13,7 +13,7 @@
 	</Target>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Fangame.ModLoader\Fangame.ModLoader.csproj" />
+		<ProjectReference Include="..\..\Fangame.ModLoader\Fangame.ModLoader.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@ using WORD = short;
 using ULONGLONG = long;
 using System.Text;
 
-public unsafe static class PEUtils
+public unsafe static class PE
 {
     struct IMAGE_SECTION_HEADER
     {

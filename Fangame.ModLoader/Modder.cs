@@ -1,61 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.Loader;
+using Fangame.ModLoader.Common;
 using Fangame.ModLoader.GM8;
 using UndertaleModLib;
 
 namespace Fangame.ModLoader;
-
-
-// Example - GameMaker 8
-//
-// Fangame.ModLoader/
-//     Mods/ -- ModsDirectory
-//         Iwpo/ -- ModDirectory
-//     Running/ -- RunningDirectory
-//         I wanna kill the kamilia 3.exe -- RunningExecutablePath / RunningGameDataPath
-// IW/
-//     I wanna kill the kamilia 3/ -- ExecutableDirectory
-//         I wanna kill the kamilia 3.exe -- ExecutablePath / GameDataPath
-
-
-// Example - GameMaker Studio
-//
-// Fangame.ModLoader/
-//     Mods/ -- ModsDirectory
-//         Iwpo/ -- ModDirectory
-//     Running/ -- RunningDirectory
-//         Arcfox Needle.exe -- RunningExecutablePath
-//         data.win -- RunningGameDataPath
-// IW/
-//     Arcfox Needle/ -- ExecutableDirectory
-//         Arcfox Needle.exe -- ExecutablePath
-//         data.win -- GameDataPath
-
-
-// Example - GameMaker Studio (Single Runtime Executable)
-//
-// Fangame.ModLoader/
-//     Mods/ -- ModsDirectory
-//         Iwpo/ -- ModDirectory
-//     Running/ -- ExecutableDirectory / RunningDirectory
-//         Flames Needle.exe -- ExecutablePath / RunningExecutablePath
-//         data.win -- GameDataPath / RunningGameDataPath
-// IW/
-//     Flames Needle/
-//         Flames Needle.exe
-
-
-// Example - GameMaker Studio (YYC)
-//
-// Fangame.ModLoader/
-//     Mods/ -- ModsDirectory
-//         Iwpo/ -- ModDirectory
-//     Running/ -- RunningDirectory
-//         Crimson Needle 2.5.exe -- RunningExecutablePath / RunningGameDataPath
-// IW/
-//     Crimson Needle 2.5/ -- ExecutableDirectory
-//         Crimson Needle 2.5.exe -- ExecutablePath / GameDataPath
-
 
 public class Modder
 {
@@ -79,13 +29,14 @@ public class Modder
 
     public UndertaleData? UndertaleData;
     public GM8Data? GM8Data;
+    public CommonData? CommonData;
 
-    public Modder(string executablePath, string[] modNames)
+    public Modder(string executablePath, string runningDirectory, string modsDirectory, string[] modNames)
     {
-        ModsDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mods");
-        RunningDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Running");
+        ModsDirectory = modsDirectory;
+        RunningDirectory = runningDirectory;
         ExecutablePath = executablePath;
-        ExecutableDirectory = Path.GetDirectoryName(executablePath)!;
+        ExecutableDirectory = Path.GetDirectoryName(executablePath) ?? "";
         GameDataPath = "";
         RunningExecutablePath = "";
         RunningExecutablePath = "";
@@ -128,7 +79,7 @@ public class Modder
 
     private void AnalyzeExecutable()
     {
-        string[] importNames = PEUtils.GetImportNames(ExecutablePath);
+        string[] importNames = PE.GetImportNames(ExecutablePath);
         if (importNames.Contains("Cabinet.dll"))
         {
             IsSingleRuntimeExecutable = true;
@@ -137,6 +88,8 @@ public class Modder
                 FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "7za.exe"),
                 Arguments = $"e \"{ExecutablePath}\" -o\"{RunningDirectory}\"",
                 RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
             }) ?? throw new IOException("Cannot start 7za.exe process.");
             p.WaitForExit();
             if (p.ExitCode != 0)
@@ -171,7 +124,7 @@ public class Modder
                 GameDataPath = maybeGameDataPath;
                 RunningExecutablePath = Path.Combine(RunningDirectory, Path.GetFileName(ExecutablePath));
                 RunningGameDataPath = Path.Combine(RunningDirectory, "data.win");
-                RunningArguments = $"-game {RunningGameDataPath}";
+                RunningArguments = $"-game \"{RunningGameDataPath}\"";
             }
             else
             {
@@ -184,7 +137,11 @@ public class Modder
         }
         else
         {
-            throw new IOException("Not supported executable engine.");
+            ExecutableEngine = ExecutableEngine.Unknown;
+            GameDataPath = ExecutablePath;
+            RunningExecutablePath = Path.Combine(RunningDirectory, Path.GetFileName(ExecutablePath));
+            RunningGameDataPath = RunningExecutablePath;
+            IsEmbeddedGameData = false;
         }
 
         Console.WriteLine($"engine: {Enum.GetName(ExecutableEngine)}");
@@ -192,20 +149,22 @@ public class Modder
 
     private void ParseGame()
     {
-        if (GameDataPath == null) return;
-
         Console.WriteLine("parsing game...");
 
         if (ExecutableEngine == ExecutableEngine.GameMaker8)
         {
             GM8Data = GM8Data.FromExecutable(GameDataPath);
+            CommonData = new CommonData(GM8Data);
         }
         else if (ExecutableEngine == ExecutableEngine.GameMakerStudio)
         {
             if (!IsEmbeddedGameData)
             {
-                using var fs = File.OpenRead(GameDataPath);
-                UndertaleData = UndertaleIO.Read(fs);
+                using (var fs = File.OpenRead(GameDataPath))
+                {
+                    UndertaleData = UndertaleIO.Read(fs);
+                }
+                CommonData = new CommonData(UndertaleData);
             }
         }
     }
@@ -220,7 +179,12 @@ public class Modder
         foreach (string modName in ModNames)
         {
             string modDirectory = Path.Combine(ModsDirectory, modName);
-            Assembly modAssembly = Assembly.LoadFile(Path.Combine(modDirectory, $"{modName}.dll"));
+            AssemblyLoadContext loadContext = new AssemblyLoadContext(modDirectory, true);
+            loadContext.Resolving += (loadContext, assemblyName) =>
+            {
+                return loadContext.LoadFromAssemblyPath(Path.Combine(modDirectory, $"{assemblyName.Name}.dll"));
+            };
+            Assembly modAssembly = loadContext.LoadFromAssemblyPath(Path.Combine(modDirectory, $"{modName}.dll"));
             Type? modType = modAssembly.GetTypes().Where(x => typeof(Mod).IsAssignableFrom(x)).FirstOrDefault();
             if (modType != null)
             {
@@ -238,14 +202,7 @@ public class Modder
         {
             Console.WriteLine($"modding: {mod.GetType().Assembly.GetName().Name}");
             mod.Load();
-            if (GM8Data != null)
-            {
-                mod.ModGM8(GM8Data);
-            }
-            else if (UndertaleData != null)
-            {
-                mod.ModGMS(UndertaleData);
-            }
+            CommonData?.FlushReplaceQueue();
         }
     }
 
@@ -268,13 +225,17 @@ public class Modder
                 UndertaleIO.Write(fs, UndertaleData);
             }
         }
-
-        using (FileStream fs = File.OpenWrite(RunningExecutablePath))
+        else
         {
-            foreach (var mod in Mods)
+            if (ExecutablePath != RunningExecutablePath)
             {
-                mod.ModExecutable(fs);
+                File.Copy(ExecutablePath, RunningExecutablePath, true);
             }
+        }
+
+        foreach (var mod in Mods)
+        {
+            mod.ModExecutable();
         }
     }
 

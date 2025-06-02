@@ -30,11 +30,19 @@ public unsafe class GM8Stream : Stream, IDisposable
         Len = 0;
     }
 
+    ~GM8Stream()
+    {
+        Dispose(false);
+    }
+
     protected override void Dispose(bool disposing)
     {
-        if (Buffer.Length != 0)
+        if (Buffer != null)
         {
-            ArrayPool<byte>.Shared.Return(Buffer);
+            if (Buffer.Length != 0)
+            {
+                ArrayPool<byte>.Shared.Return(Buffer);
+            }
             Buffer = null!;
         }
     }

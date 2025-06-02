@@ -1,4 +1,4 @@
-Iwpo.dll
+PlayOnline.dll
 dialog.ext8
 http.ext8
 font.font8

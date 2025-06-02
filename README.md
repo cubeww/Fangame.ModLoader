@@ -1,1 +1,1 @@
-# Fangame ModLoader
+# Fangame.ModLoader

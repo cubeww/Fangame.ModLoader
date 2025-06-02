@@ -5,6 +5,12 @@ public class GM8Script
     public string Name;
     public string Source;
 
+    public GM8Script()
+    {
+        Name = "";
+        Source = "";
+    }
+
     public GM8Script(GM8Stream s)
     {
         Name = s.ReadString();

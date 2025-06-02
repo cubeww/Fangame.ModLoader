@@ -3,9 +3,9 @@ using Fangame.ModLoader;
 using Fangame.ModLoader.GM8;
 using UndertaleModLib;
 
-namespace Iwpo;
+namespace PlayOnline;
 
-public class IwpoMod : Mod
+public class PlayOnlineMod : Mod
 {
     Config Config = null!;
     string GameId = "";
@@ -14,12 +14,20 @@ public class IwpoMod : Mod
     public override void Load()
     {
         Config = LoadConfig(new Config());
+        if (GM8Data != null)
+        {
+            ModGM8(GM8Data);
+        }
+        if (UndertaleData != null)
+        {
+            ModGMS(UndertaleData);
+        }
     }
 
-    public override void ModGM8(GM8Data data)
+    public void ModGM8(GM8Data data)
     {
         GameId = GetGameDataHash();
-        GameName = Path.GetFileNameWithoutExtension(Modder.ExecutablePath);
+        GameName = Path.GetFileNameWithoutExtension(ExecutablePath);
 
         // Extensions
         using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "http.ext8")))
@@ -114,14 +122,14 @@ public class IwpoMod : Mod
         }
     }
 
-    public override void ModGMS(UndertaleData data)
+    public void ModGMS(UndertaleData data)
     {
     }
 
     private string GetGameDataHash()
     {
         using var md5 = MD5.Create();
-        using var stream = File.OpenRead(Modder.GameDataPath);
+        using var stream = File.OpenRead(GameDataPath);
         var hash = md5.ComputeHash(stream);
         return Convert.ToHexStringLower(hash);
     }

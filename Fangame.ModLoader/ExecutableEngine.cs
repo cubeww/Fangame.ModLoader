@@ -2,6 +2,7 @@
 
 public enum ExecutableEngine
 {
+    Unknown,
     GameMaker8,
     GameMakerStudio,
 }

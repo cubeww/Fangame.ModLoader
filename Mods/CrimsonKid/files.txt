@@ -1,0 +1,7 @@
+CrimsonKid.dll
+sprPlayerIdle.png
+sprPlayerRunning.png
+sprPlayerJump.png
+sprPlayerFall.png
+sprPlayerSliding.png
+sprBow.png

@@ -1,6 +1,6 @@
 $modName = [IO.Path]::GetFileName($pwd)
 $projDirectory = "."
-$modDirectory = [IO.Path]::Combine($projDirectory, "..", "..", "Fangame.ModLoader", "bin", "Debug", "net9.0", "Mods", $modName)
+$modDirectory = [IO.Path]::Combine($projDirectory, "..", "..", "WorkingDirectory", "Mods", $modName)
 $filesTxtPath = [IO.Path]::Combine($projDirectory, "files.txt")
 foreach ($fileName in [IO.File]::ReadAllLines($filesTxtPath)) {
     $sourcePath = [IO.Path]::Combine($projDirectory, $fileName)

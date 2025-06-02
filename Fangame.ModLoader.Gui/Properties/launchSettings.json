@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Fangame.ModLoader.Gui": {
+      "commandName": "Project",
+      "workingDirectory": "../WorkingDirectory"
+    }
+  }
+}

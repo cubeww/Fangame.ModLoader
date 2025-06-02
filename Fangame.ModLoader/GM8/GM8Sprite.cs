@@ -5,9 +5,16 @@ public class GM8Sprite
     public string Name;
     public int OriginX;
     public int OriginY;
-    public List<GM8SpriteFrame> Frames;
-    public List<GM8CollisionMap> Colliders;
-    public bool PerFrameColliders;
+    public List<GM8SpriteImage> Images;
+    public List<GM8CollisionMask> CollisionMasks;
+    public bool SepMasks;
+
+    public GM8Sprite()
+    {
+        Name = "";
+        Images = [];
+        CollisionMasks = [];
+    }
 
     public GM8Sprite(GM8Stream s)
     {
@@ -16,19 +23,19 @@ public class GM8Sprite
         OriginX = s.ReadInt32();
         OriginY = s.ReadInt32();
         int frameCount = s.ReadInt32();
-        Frames = new List<GM8SpriteFrame>(frameCount);
-        Colliders = new List<GM8CollisionMap>(frameCount);
+        Images = new List<GM8SpriteImage>(frameCount);
+        CollisionMasks = new List<GM8CollisionMask>(frameCount);
         for (int i = 0; i < frameCount; i++)
         {
-            Frames.Add(new GM8SpriteFrame(s));
+            Images.Add(new GM8SpriteImage(s));
         }
-        PerFrameColliders = s.ReadBoolean();
+        SepMasks = s.ReadBoolean();
         if (frameCount > 0)
         {
-            int colliderCount = PerFrameColliders ? Frames.Count : 1;
-            for (int i = 0; i < colliderCount; i++)
+            int maskCount = SepMasks ? Images.Count : 1;
+            for (int i = 0; i < maskCount; i++)
             {
-                Colliders.Add(new GM8CollisionMap(s));
+                CollisionMasks.Add(new GM8CollisionMask(s));
             }
         }
     }
@@ -39,29 +46,36 @@ public class GM8Sprite
         s.WriteInt32(800);
         s.WriteInt32(OriginX);
         s.WriteInt32(OriginY);
-        s.WriteInt32(Frames.Count);
-        for (int i = 0; i < Frames.Count; i++)
+        s.WriteInt32(Images.Count);
+        for (int i = 0; i < Images.Count; i++)
         {
-            Frames[i].Save(s);
+            Images[i].Save(s);
         }
-        s.WriteBoolean(PerFrameColliders);
-        if (Frames.Count > 0)
+        s.WriteBoolean(SepMasks);
+        if (Images.Count > 0)
         {
-            for (int i = 0; i < Colliders.Count; i++)
+            for (int i = 0; i < CollisionMasks.Count; i++)
             {
-                Colliders[i].Save(s);
+                CollisionMasks[i].Save(s);
             }
         }
     }
 }
 
-public class GM8SpriteFrame
+public class GM8SpriteImage
 {
     public int Width;
     public int Height;
     public byte[] Data;
 
-    public GM8SpriteFrame(GM8Stream s)
+    public GM8SpriteImage(int width, int height, byte[] data)
+    {
+        Width = width;
+        Height = height;
+        Data = data;
+    }
+
+    public GM8SpriteImage(GM8Stream s)
     {
         s.ReadInt32();
         Width = s.ReadInt32();
@@ -78,7 +92,7 @@ public class GM8SpriteFrame
     }
 }
 
-public class GM8CollisionMap
+public class GM8CollisionMask
 {
     public int Width;
     public int Height;
@@ -88,7 +102,34 @@ public class GM8CollisionMap
     public int BBoxBottom;
     public bool[] Data;
 
-    public GM8CollisionMap(GM8Stream s)
+    public GM8CollisionMask(GM8SpriteImage image)
+    {
+        Width = image.Width;
+        Height = image.Height;
+        Data = new bool[Width * Height];
+        BBoxLeft = Width - 1;
+        BBoxRight = 0;
+        BBoxTop = Height - 1;
+        BBoxBottom = 0;
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                int idx = x + y * Height;
+                bool hasAlpha = image.Data[idx * 4 + 3] > 0;
+                Data[idx] = hasAlpha;
+                if (hasAlpha)
+                {
+                    BBoxLeft = int.Min(BBoxLeft, x);
+                    BBoxRight = int.Max(BBoxRight, x);
+                    BBoxTop = int.Min(BBoxTop, y);
+                    BBoxBottom = int.Max(BBoxBottom, y);
+                }
+            }
+        }
+    }
+
+    public GM8CollisionMask(GM8Stream s)
     {
         s.ReadInt32();
         Width = s.ReadInt32();

@@ -1,38 +1,19 @@
 ﻿using Fangame.ModLoader;
-using Fangame.ModLoader.GM8;
-using Underanalyzer.Decompiler;
-using UndertaleModLib;
-using UndertaleModLib.Compiler;
-using UndertaleModLib.Decompiler;
 
-namespace Godmode;
+namespace GodMode;
 
-public class GodmodeMod : Mod
+public class GodModeMod : Mod
 {
-    public override void ModGM8(GM8Data data)
+    public override void Load()
     {
-        foreach (var script in data.Scripts)
+        if (CommonData != null)
         {
-            if (script?.Name is "scrKillPlayer" or "killPlayer" or "player_kill")
+            foreach (var script in CommonData.Scripts)
             {
-                script.Source = "exit;\n" + script.Source;
-            }
-        }
-    }
-
-    public override void ModGMS(UndertaleData data)
-    {
-        GlobalDecompileContext globalDecompilerContext = new GlobalDecompileContext(data);
-        foreach (var script in data.Scripts)
-        {
-            if (script.Name.Content is "scrKillPlayer" or "killPlayer" or "player_kill")
-            {
-                DecompileContext decompilerContext = new DecompileContext(globalDecompilerContext, script.Code);
-                string source = decompilerContext.DecompileToString();
-                source = "exit;\n" + source;
-                CompileGroup group = new CompileGroup(data, globalDecompilerContext);
-                group.QueueCodeReplace(script.Code, source);
-                group.Compile();
+                if (script.Name is "scrKillPlayer" or "killPlayer" or "player_kill")
+                {
+                    script.Source = "exit;\n" + script.Source;
+                }
             }
         }
     }

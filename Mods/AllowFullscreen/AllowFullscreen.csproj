@@ -5,17 +5,15 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<EnableDynamicLoading>true</EnableDynamicLoading>
+		<RunPostBuildEvent>Always</RunPostBuildEvent>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\Fangame.ModLoader\Fangame.ModLoader.csproj">
-			<Private>false</Private>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</ProjectReference>
-	</ItemGroup>
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="powershell ../copyfiles.ps1" />
+		<Exec Command="powershell ../copyfiles.ps1" />
 	</Target>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Fangame.ModLoader\Fangame.ModLoader.csproj" />
+	</ItemGroup>
 
 </Project>

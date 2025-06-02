@@ -1,0 +1,3 @@
+DbgHelper.dll
+DBGHELP.dll
+gm8x_fix.exe
