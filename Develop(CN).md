@@ -215,6 +215,46 @@ foreach (var obj in CommonData.Objects)
 
 ![image-20250602170524857](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602170524857.png)
 
+## 配置文件
+
+你可以为Mod添加一个“配置文件”，以允许让用户调整一些Mod的参数。比如说我们要加入一个“bow精灵播放速率”的参数，你需要编写一个CrimsonKidConfig类（名字随意），并继承自**ModConfig**：
+
+```c#
+using System.ComponentModel;
+using Fangame.ModLoader;
+
+namespace CrimsonKid;
+
+public class CrimsonKidConfig : ModConfig
+{
+    [Category("Sprite")]
+    [Description("Image speed of the 'bow' sprite.")]
+    public double BowImageSpeed { get; set; } = 0.2;
+}
+
+```
+
+为了能让程序识别，请务必将字段暴露为属性（推荐使用自动属性 { get; set; } ）。同时推荐添加Category以及Description特性以让用户界面支持显示这些信息提示（更多特性请参考[PropertyGrid](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.propertygrid)）。
+
+要使用配置类，直接在Mod代码中调用GetConfig<TConfig>()即可。加载器会自动处理，并在文件不存在时自动帮你创建配置。
+
+```c#
+public class CrimsonKidMod : Mod
+{
+    public override void Load()
+    {
+        var config = GetConfig<CrimsonKidConfig>();
+        ...
+        bow.EventAddCode(EventType.Create, 0, $"\nimage_speed = {config.BowImageSpeed};");
+        ...
+    }
+}
+```
+
+再次调试运行，你应该能看见配置属性被显示到Config区域中。
+
+![image-20250603201534829](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250603201534829.png)
+
 ## 高级
 
 **CommonData**是ModLoader对GM8Data和UndertaleData的一个包装器，可以同时支持GM8和GMS两种游戏数据，在编写Mod时应尽可能使用这个类型以简化代码。

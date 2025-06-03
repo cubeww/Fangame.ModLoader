@@ -4,6 +4,7 @@ namespace Fangame.ModLoader.Gui;
 
 public partial class MainForm : Form
 {
+    ModManager ModManager;
     string RunningDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Running");
     string ModsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
     string ExecutablePath = "";
@@ -13,7 +14,8 @@ public partial class MainForm : Form
         InitializeComponent();
         Console.SetOut(new ControlWriter(OutputTextBox));
         CleanRunningDirectory();
-        LoadModsList();
+        ModManager = new ModManager(ModsDirectory);
+        ModsListBox.Items.AddRange(ModManager.GetModNames());
     }
 
     private void CleanRunningDirectory()
@@ -31,20 +33,6 @@ public partial class MainForm : Form
         foreach (var dir in Directory.EnumerateDirectories(RunningDirectory))
         {
             Directory.Delete(dir, true);
-        }
-    }
-
-    private void LoadModsList()
-    {
-        if (!Directory.Exists(ModsDirectory))
-        {
-            Directory.CreateDirectory(ModsDirectory);
-        }
-
-        string[] modNames = Directory.EnumerateDirectories(ModsDirectory).Select(x => Path.GetFileName(x)).ToArray();
-        foreach (var modName in modNames)
-        {
-            ModsListBox.Items.Add(modName);
         }
     }
 
@@ -68,12 +56,22 @@ public partial class MainForm : Form
         OutputTextBox.Clear();
         string[] modNames = ModsListBox.CheckedItems.Cast<string>().ToArray();
         string runningDirectory = Path.Combine(RunningDirectory, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
-        Modder modder = new Modder(ExecutablePath, runningDirectory, ModsDirectory, modNames);
-        await Task.Run(modder.ModAndRun);
+        ModLoader loader = new ModLoader(ExecutablePath, runningDirectory, ModManager, modNames);
+        await Task.Run(loader.ModAndRun);
     }
 
     private void OpenModsFolderButton_Click(object sender, EventArgs e)
     {
         Process.Start("explorer.exe", ModsDirectory);
+    }
+
+    private void ModsListBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ModConfigGrid.SelectedObject = ModManager.GetConfig((string)ModsListBox.SelectedItem!);
+    }
+
+    private void ModConfigGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+    {
+        ModManager.SaveConfig((string)ModsListBox.SelectedItem!);
     }
 }

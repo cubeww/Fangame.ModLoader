@@ -8,6 +8,8 @@ public class CrimsonKidMod : Mod
 {
     public override void Load()
     {
+        var config = GetConfig<CrimsonKidConfig>();
+
         if (CommonData != null)
         {
             foreach (var sprite in CommonData.Sprites)
@@ -45,7 +47,7 @@ public class CrimsonKidMod : Mod
             {
                 if (player != null)
                     bow.Depth = player.Depth + 1;
-                bow.EventAddCode(EventType.Create, 0, "\nimage_speed = 0.2;");
+                bow.EventAddCode(EventType.Create, 0, $"\nimage_speed = {config.BowImageSpeed};");
             }
         }
     }

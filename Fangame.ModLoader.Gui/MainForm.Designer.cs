@@ -34,6 +34,8 @@
             OutputTextBox = new TextBox();
             label2 = new Label();
             OpenModsFolderButton = new Button();
+            ModConfigGrid = new PropertyGrid();
+            label3 = new Label();
             SuspendLayout();
             // 
             // ModsListBox
@@ -42,8 +44,9 @@
             ModsListBox.FormattingEnabled = true;
             ModsListBox.Location = new Point(23, 63);
             ModsListBox.Name = "ModsListBox";
-            ModsListBox.Size = new Size(261, 328);
+            ModsListBox.Size = new Size(261, 436);
             ModsListBox.TabIndex = 0;
+            ModsListBox.SelectedIndexChanged += ModsListBox_SelectedIndexChanged;
             // 
             // label1
             // 
@@ -57,11 +60,12 @@
             // OutputTextBox
             // 
             OutputTextBox.AllowDrop = true;
-            OutputTextBox.Location = new Point(328, 63);
+            OutputTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            OutputTextBox.Location = new Point(23, 556);
             OutputTextBox.Multiline = true;
             OutputTextBox.Name = "OutputTextBox";
             OutputTextBox.ScrollBars = ScrollBars.Both;
-            OutputTextBox.Size = new Size(440, 328);
+            OutputTextBox.Size = new Size(735, 169);
             OutputTextBox.TabIndex = 2;
             OutputTextBox.Text = "To mod a game, drag and drop the game exe here...\r\n";
             OutputTextBox.DragDrop += OutputTextBox_DragDrop;
@@ -70,7 +74,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(328, 14);
+            label2.Location = new Point(23, 518);
             label2.Name = "label2";
             label2.Size = new Size(73, 24);
             label2.TabIndex = 3;
@@ -86,11 +90,32 @@
             OpenModsFolderButton.UseVisualStyleBackColor = true;
             OpenModsFolderButton.Click += OpenModsFolderButton_Click;
             // 
+            // ModConfigGrid
+            // 
+            ModConfigGrid.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ModConfigGrid.BackColor = SystemColors.Control;
+            ModConfigGrid.Location = new Point(309, 63);
+            ModConfigGrid.Name = "ModConfigGrid";
+            ModConfigGrid.Size = new Size(449, 436);
+            ModConfigGrid.TabIndex = 5;
+            ModConfigGrid.PropertyValueChanged += ModConfigGrid_PropertyValueChanged;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(309, 14);
+            label3.Name = "label3";
+            label3.Size = new Size(67, 24);
+            label3.TabIndex = 6;
+            label3.Text = "Config";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(798, 416);
+            ClientSize = new Size(786, 747);
+            Controls.Add(label3);
+            Controls.Add(ModConfigGrid);
             Controls.Add(OpenModsFolderButton);
             Controls.Add(label2);
             Controls.Add(OutputTextBox);
@@ -110,5 +135,7 @@
         private TextBox OutputTextBox;
         private Label label2;
         private Button OpenModsFolderButton;
+        private PropertyGrid ModConfigGrid;
+        private Label label3;
     }
 }

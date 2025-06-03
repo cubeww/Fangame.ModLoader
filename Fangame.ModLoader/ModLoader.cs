@@ -1,39 +1,35 @@
 ﻿using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.Loader;
 using Fangame.ModLoader.Common;
 using Fangame.ModLoader.GM8;
 using UndertaleModLib;
 
 namespace Fangame.ModLoader;
 
-public class Modder
+public class ModLoader
 {
-    public string ModsDirectory;
-    public string RunningDirectory;
+    public ModManager ModManager;
 
+    public string RunningDirectory;
     public string ExecutablePath;
     public string ExecutableDirectory;
-
     public string GameDataPath;
     public string RunningExecutablePath;
     public string RunningGameDataPath;
 
-    public string RunningArguments;
-    public string[] ModNames;
-    public List<Mod> Mods;
     public ExecutableEngine ExecutableEngine;
-
     public bool IsSingleRuntimeExecutable;
-    public bool IsEmbeddedGameData;
-
     public UndertaleData? UndertaleData;
     public GM8Data? GM8Data;
     public CommonData? CommonData;
 
-    public Modder(string executablePath, string runningDirectory, string modsDirectory, string[] modNames)
+    public bool IsEmbeddedGameData;
+    public string[] ModNames;
+    public List<Mod> Mods;
+    public string RunningArguments;
+
+    public ModLoader(string executablePath, string runningDirectory, ModManager modManager, string[] modNames)
     {
-        ModsDirectory = modsDirectory;
+        ModManager = modManager;
         RunningDirectory = runningDirectory;
         ExecutablePath = executablePath;
         ExecutableDirectory = Path.GetDirectoryName(executablePath) ?? "";
@@ -52,7 +48,7 @@ public class Modder
         CleanRunningDirectory();
         AnalyzeExecutable();
         ParseGame();
-        LoadMods();
+        CreateModInstances();
         ModGame();
         SaveGame();
         RunGame();
@@ -169,29 +165,17 @@ public class Modder
         }
     }
 
-    private void LoadMods()
+    private void CreateModInstances()
     {
-        if (!Directory.Exists(ModsDirectory))
-        {
-            Directory.CreateDirectory(ModsDirectory);
-        }
-
         foreach (string modName in ModNames)
         {
-            string modDirectory = Path.Combine(ModsDirectory, modName);
-            AssemblyLoadContext loadContext = new AssemblyLoadContext(modDirectory, true);
-            loadContext.Resolving += (loadContext, assemblyName) =>
+            if (ModManager.CreateInstance(modName) is { } mod)
             {
-                return loadContext.LoadFromAssemblyPath(Path.Combine(modDirectory, $"{assemblyName.Name}.dll"));
-            };
-            Assembly modAssembly = loadContext.LoadFromAssemblyPath(Path.Combine(modDirectory, $"{modName}.dll"));
-            Type? modType = modAssembly.GetTypes().Where(x => typeof(Mod).IsAssignableFrom(x)).FirstOrDefault();
-            if (modType != null)
-            {
-                Mod mod = (Mod)Activator.CreateInstance(modType)!;
-                mod.Modder = this;
-                mod.ModDirectory = modDirectory;
                 Mods.Add(mod);
+                mod.ModLoader = this;
+                mod.ModManager = ModManager;
+                mod.ModName = modName;
+                mod.ModDirectory = Path.Combine(ModManager.ModsDirectory, modName);
             }
         }
     }

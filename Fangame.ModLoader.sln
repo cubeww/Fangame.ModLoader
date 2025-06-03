@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllowFullscreen", "Mods\All
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrimsonKid", "Mods\CrimsonKid\CrimsonKid.csproj", "{157C3B14-9B57-0689-FD00-F725F47A86CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRef", "Mods\TestRef\TestRef.csproj", "{6AFB5B94-73CA-3A44-1472-DF7776311112}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,10 +65,6 @@ Global
 		{157C3B14-9B57-0689-FD00-F725F47A86CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{157C3B14-9B57-0689-FD00-F725F47A86CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{157C3B14-9B57-0689-FD00-F725F47A86CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6AFB5B94-73CA-3A44-1472-DF7776311112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6AFB5B94-73CA-3A44-1472-DF7776311112}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6AFB5B94-73CA-3A44-1472-DF7776311112}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6AFB5B94-73CA-3A44-1472-DF7776311112}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,7 +75,6 @@ Global
 		{F58C2B0E-3B6E-4C7A-AED5-73F55F413714} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{6A548A09-4D3E-E9CA-7756-99FF7C069A1B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{157C3B14-9B57-0689-FD00-F725F47A86CE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{6AFB5B94-73CA-3A44-1472-DF7776311112} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F79D99BC-A87E-4EB3-8BCC-874B60CC2FD6}

@@ -1,129 +1,117 @@
 ﻿using System.Security.Cryptography;
 using Fangame.ModLoader;
+using Fangame.ModLoader.Common;
 using Fangame.ModLoader.GM8;
-using UndertaleModLib;
+using UndertaleModLib.Models;
 
 namespace PlayOnline;
 
 public class PlayOnlineMod : Mod
 {
-    Config Config = null!;
+    PlayOnlineConfig Config = null!;
     string GameId = "";
     string GameName = "";
+    string Version = "1.1.9";
 
     public override void Load()
     {
-        Config = LoadConfig(new Config());
-        if (GM8Data != null)
-        {
-            ModGM8(GM8Data);
-        }
-        if (UndertaleData != null)
-        {
-            ModGMS(UndertaleData);
-        }
-    }
-
-    public void ModGM8(GM8Data data)
-    {
+        Config = GetConfig<PlayOnlineConfig>();
         GameId = GetGameDataHash();
         GameName = Path.GetFileNameWithoutExtension(ExecutablePath);
 
-        // Extensions
-        using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "http.ext8")))
+        if (CommonData != null)
         {
-            data.Extensions.Add(new GM8Extension(s));
-        }
-
-        using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "dialog.ext8")))
-        {
-            data.Extensions.Add(new GM8Extension(s));
-        }
-
-        // Fonts
-        using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "font.font8")))
-        {
-            data.Fonts.Add(new GM8Font(s, data.Version));
-        }
-
-        // Sounds
-        using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "chatbox.snd8")))
-        {
-            data.Sounds.Add(new GM8Sound(s));
-        }
-
-        using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "saved.snd8")))
-        {
-            data.Sounds.Add(new GM8Sound(s));
-        }
-
-        // Objects
-        foreach (var obj in data.Objects)
-        {
-            // World
-            if (obj?.Name is "world" or "objWorld" or "World" or "oWorld")
+            // Objects
+            foreach (var obj in CommonData.Objects)
             {
-                obj.GetEventOrAdd(GM8ObjectEventType.Create).AddCode(Code_World_Create());
-                obj.GetEventOrAdd(GM8ObjectEventType.Step, (int)GM8ObjectEventSubtypeStep.StepEnd).AddCode(Code_World_EndStep());
-                obj.GetEventOrAdd(GM8ObjectEventType.Other, (int)GM8ObjectEventSubtypeOther.GameEnd).AddCode(Code_World_GameEnd());
+                // World
+                if (obj.Name is "world" or "objWorld" or "World" or "oWorld")
+                {
+                    obj.EventAddCode(EventType.Create, 0, Code_World_Create());
+                    obj.EventAddCode(EventType.Step, (int)EventSubtypeStep.EndStep, Code_World_EndStep());
+                    obj.EventAddCode(EventType.Other, (int)EventSubtypeOther.GameEnd, Code_World_GameEnd());
+                }
+            }
+
+            // Online Player
+            CommonObject onlinePlayer = CommonData.Objects.CreateNew();
+            onlinePlayer.Name = "__ONLINE_onlinePlayer";
+            onlinePlayer.Persistent = true;
+            onlinePlayer.Depth = -10;
+            onlinePlayer.EventAddCode(EventType.Create, 0, Code_OnlinePlayer_Create());
+            onlinePlayer.EventAddCode(EventType.Step, (int)EventSubtypeStep.EndStep, Code_OnlinePlayer_EndStep());
+            onlinePlayer.EventAddCode(EventType.Draw, (int)EventSubtypeDraw.Draw, Code_OnlinePlayer_Draw());
+
+            // Chatbox
+            CommonObject chatbox = CommonData.Objects.CreateNew();
+            chatbox.Name = "__ONLINE_chatbox";
+            chatbox.Visible = true;
+            chatbox.Depth = -11;
+            chatbox.Persistent = true;
+            chatbox.EventAddCode(EventType.Create, 0, Code_Chatbox_Create());
+            chatbox.EventAddCode(EventType.Step, (int)EventSubtypeStep.EndStep, Code_Chatbox_EndStep());
+            chatbox.EventAddCode(EventType.Draw, (int)EventSubtypeDraw.Draw, Code_Chatbox_Draw());
+
+            // Player Saved
+            CommonObject playerSaved = CommonData.Objects.CreateNew();
+            playerSaved.Name = "__ONLINE_playerSaved";
+            playerSaved.Visible = true;
+            playerSaved.Depth = -10;
+            playerSaved.EventAddCode(EventType.Step, (int)EventSubtypeStep.EndStep, Code_PlayerSaved_EndStep());
+            playerSaved.EventAddCode(EventType.Draw, (int)EventSubtypeDraw.Draw, Code_PlayerSaved_Draw());
+
+            // Scripts
+            foreach (var script in CommonData.Scripts)
+            {
+                // Save Game
+                if (script.Name is "saveGame" or "scrSaveGame")
+                {
+                    script.Source = script.Source + '\n' + Code_SaveGame();
+                }
+
+                // Load Game
+                if (script.Name is "loadGame" or "scrLoadGame")
+                {
+                    script.Source = script.Source + '\n' + Code_LoadGame();
+                }
             }
         }
 
-        // Online Player
-        GM8Object onlinePlayer = new GM8Object
+        if (GM8Data != null)
         {
-            Name = "__ONLINE_onlinePlayer",
-            Persistent = true,
-            Depth = -10,
-        };
-        onlinePlayer.GetEventOrAdd(GM8ObjectEventType.Create).AddCode(Code_OnlinePlayer_Create());
-        onlinePlayer.GetEventOrAdd(GM8ObjectEventType.Step, (int)GM8ObjectEventSubtypeStep.StepEnd).AddCode(Code_OnlinePlayer_EndStep());
-        onlinePlayer.GetEventOrAdd(GM8ObjectEventType.Draw).AddCode(Code_OnlinePlayer_Draw());
-        data.Objects.Add(onlinePlayer);
-
-        // Chatbox
-        GM8Object chatbox = new GM8Object
-        {
-            Name = "__ONLINE_chatbox",
-            Visible = true,
-            Depth = -11,
-            Persistent = true,
-        };
-        chatbox.GetEventOrAdd(GM8ObjectEventType.Create).AddCode(Code_Chatbox_Create());
-        chatbox.GetEventOrAdd(GM8ObjectEventType.Step, (int)GM8ObjectEventSubtypeStep.StepEnd).AddCode(Code_Chatbox_EndStep());
-        chatbox.GetEventOrAdd(GM8ObjectEventType.Draw).AddCode(Code_Chatbox_Draw());
-        data.Objects.Add(chatbox);
-
-        // Player Saved
-        GM8Object playerSaved = new GM8Object
-        {
-            Name = "__ONLINE_playerSaved",
-            Visible = true,
-            Depth = -10,
-        };
-        chatbox.GetEventOrAdd(GM8ObjectEventType.Step, (int)GM8ObjectEventSubtypeStep.StepEnd).AddCode(Code_PlayerSaved_EndStep());
-        chatbox.GetEventOrAdd(GM8ObjectEventType.Draw).AddCode(Code_PlayerSaved_Draw());
-        data.Objects.Add(playerSaved);
-
-        // Scripts
-        foreach (var script in data.Scripts)
-        {
-            // Save Game
-            if (script?.Name is "saveGame")
+            // Extensions
+            using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "http.ext8")))
             {
-                script.Source += '\n' + Code_SaveGame();
+                GM8Data.Extensions.Add(new GM8Extension(s));
             }
 
-            // Load Game
-            if (script?.Name is "loadGame")
+            using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "dialog.ext8")))
             {
-                script.Source += '\n' + Code_LoadGame();
+                GM8Data.Extensions.Add(new GM8Extension(s));
+            }
+
+            // Fonts
+            using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "font.font8")))
+            {
+                GM8Data.Fonts.Add(new GM8Font(s, GM8Data.Version));
+            }
+
+            // Sounds
+            using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "chatbox.snd8")))
+            {
+                GM8Data.Sounds.Add(new GM8Sound(s));
+            }
+
+            using (GM8Stream s = GM8Stream.FromFile(Path.Combine(ModDirectory, "saved.snd8")))
+            {
+                GM8Data.Sounds.Add(new GM8Sound(s));
             }
         }
-    }
 
-    public void ModGMS(UndertaleData data)
-    {
+        if (UndertaleData != null)
+        {
+
+        }
     }
 
     private string GetGameDataHash()
@@ -145,14 +133,14 @@ public class PlayOnlineMod : Mod
             // {{Config.TcpPort}}: The TCP port
             // {{Config.UdpPort}}: The UDP port
             // {{GameName}}: The game name
-            // {{Config.Version}}: The version 
+            // {{Version}}: The version 
             __ONLINE_connected = false;
             __ONLINE_buffer = buffer_create();
             __ONLINE_selfID = "";
             __ONLINE_name = "";
             __ONLINE_selfGameID = "{{GameId}}";
             __ONLINE_server = "{{Config.ServerIp}}";
-            __ONLINE_version = "{{Config.Version}}";
+            __ONLINE_version = "{{Version}}";
             __ONLINE_race = false;
             __ONLINE_vis = 0;
             __ONLINE_save_enabled = 1;
@@ -187,7 +175,7 @@ public class PlayOnlineMod : Mod
             {
                 __ONLINE_socket = socket_create();
                 socket_connect(__ONLINE_socket, __ONLINE_server, {{Config.TcpPort}});
-                __ONLINE_name = wd_input_box("Name", "Enter your name:", "");
+                __ONLINE_name = "{{Config.PlayerName}}";
                 if (__ONLINE_name == "")
                 {
                     __ONLINE_name = "Anonymous";
@@ -197,19 +185,18 @@ public class PlayOnlineMod : Mod
                 {
                     __ONLINE_name = string_copy(__ONLINE_name, 0, 20);
                 }
-                __ONLINE_password = wd_input_box("Password", "Leave it empty for no password:", "");
+                __ONLINE_password = "{{Config.Password}}";
                 if (string_length(__ONLINE_password) > 20)
                 {
                     __ONLINE_password = string_copy(__ONLINE_password, 0, 20);
                 }
                 __ONLINE_selfGameID += __ONLINE_password;
-                wd_message_set_text("Do you want to enable RACE mod? (shared saves will be disabled)");
-                __ONLINE_race = wd_message_show(wd_mk_information, wd_mb_yes, wd_mb_no, 0) == wd_mb_yes;
+                __ONLINE_race = {{(Config.RaceMode ? "true" : "false")}};
                 buffer_clear(__ONLINE_buffer);
                 buffer_write_uint8(__ONLINE_buffer, 3);
                 buffer_write_string(__ONLINE_buffer, __ONLINE_name);
                 buffer_write_string(__ONLINE_buffer, __ONLINE_selfGameID);
-                buffer_write_string(__ONLINE_buffer, "i wanna be the engine yuuutu edition");
+                buffer_write_string(__ONLINE_buffer, "{{GameName}}");
                 buffer_write_string(__ONLINE_buffer, __ONLINE_version);
                 buffer_write_uint8(__ONLINE_buffer, __ONLINE_password != "");
                 socket_write_message(__ONLINE_socket, __ONLINE_buffer);
