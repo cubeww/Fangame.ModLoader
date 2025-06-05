@@ -1,0 +1,1 @@
+return audio_create_stream(argument0 + ".ogg");

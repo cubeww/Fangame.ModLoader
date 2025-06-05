@@ -165,7 +165,8 @@ public class CommonContext
 
         if (CompileGroup != null && HasCodeReplace)
         {
-            CompileGroup.Compile();
+            CompileResult result = CompileGroup.Compile();
+            Console.WriteLine(result.PrintAllErrors(true));
             HasCodeReplace = false;
         }
     }

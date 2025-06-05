@@ -87,7 +87,7 @@ public class GM8Object
 
     public GM8ObjectEvent GetEventOrAdd(GM8ObjectEventType eventType, int subtype = 0)
     {
-        if (GetEvent(eventType) is { } ev)
+        if (GetEvent(eventType, subtype) is { } ev)
         {
             return ev;
         }

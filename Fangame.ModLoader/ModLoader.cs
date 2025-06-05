@@ -199,14 +199,14 @@ public class ModLoader
         }
         else if (ExecutableEngine == ExecutableEngine.GameMakerStudio)
         {
-            if (ExecutablePath != RunningExecutablePath)
-            {
-                File.Copy(ExecutablePath, RunningExecutablePath, true);
-            }
             if (!IsEmbeddedGameData)
             {
                 using FileStream fs = File.Create(RunningGameDataPath);
                 UndertaleIO.Write(fs, UndertaleData);
+            }
+            if (!IsSingleRuntimeExecutable)
+            {
+                CopyFilesRecursively(ExecutableDirectory, RunningDirectory);
             }
         }
         else
@@ -220,6 +220,23 @@ public class ModLoader
         foreach (var mod in Mods)
         {
             mod.ModExecutable();
+        }
+    }
+
+    private static void CopyFilesRecursively(string sourcePath, string targetPath)
+    {
+        foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+        {
+            Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+        }
+
+        foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+        {
+            string toPath = newPath.Replace(sourcePath, targetPath);
+            if (!File.Exists(toPath))
+            {
+                File.Copy(newPath, toPath);
+            }
         }
     }
 

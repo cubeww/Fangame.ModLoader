@@ -20,50 +20,50 @@ public class CommonCollection<T> where T : class
         {
             // GM8
             case List<GM8Sprite?> list:
-                foreach (var asset in list)
+                foreach (var sprite in list)
                 {
-                    if (asset != null)
+                    if (sprite != null)
                     {
-                        yield return (T)(object)new CommonSprite(asset, Context);
+                        yield return (T)(object)new CommonSprite(sprite, Context);
                     }
                 }
                 break;
             case List<GM8Script?> list:
-                foreach (var asset in list)
+                foreach (var script in list)
                 {
-                    if (asset != null)
+                    if (script != null)
                     {
-                        yield return (T)(object)new CommonScript(asset, Context);
+                        yield return (T)(object)new CommonScript(script, Context);
                     }
                 }
                 break;
             case List<GM8Object?> list:
-                foreach (var asset in list)
+                foreach (var obj in list)
                 {
-                    if (asset != null)
+                    if (obj != null)
                     {
-                        yield return (T)(object)new CommonObject(asset, Context);
+                        yield return (T)(object)new CommonObject(obj, Context);
                     }
                 }
                 break;
 
             // GMS
             case IList<UndertaleSprite> list:
-                foreach (var asset in list)
+                foreach (var sprite in list)
                 {
-                    yield return (T)(object)new CommonSprite(asset, Context);
+                    yield return (T)(object)new CommonSprite(sprite, Context);
                 }
                 break;
             case IList<UndertaleScript> list:
-                foreach (var asset in list)
+                foreach (var script in list)
                 {
-                    yield return (T)(object)new CommonScript(asset, Context);
+                    yield return (T)(object)new CommonScript(script, Context);
                 }
                 break;
             case IList<UndertaleGameObject> list:
-                foreach (var asset in list)
+                foreach (var obj in list)
                 {
-                    yield return (T)(object)new CommonObject(asset, Context);
+                    yield return (T)(object)new CommonObject(obj, Context);
                 }
                 break;
             default:
@@ -78,41 +78,42 @@ public class CommonCollection<T> where T : class
             // GM8
             case List<GM8Sprite?> list:
                 {
-                    var x = new GM8Sprite();
-                    list.Add(x);
-                    return (T)(object)new CommonSprite(x, Context);
+                    var sprite = new GM8Sprite();
+                    list.Add(sprite);
+                    return (T)(object)new CommonSprite(sprite, Context);
                 }
             case List<GM8Script?> list:
                 {
-                    var x = new GM8Script();
-                    list.Add(x);
-                    return (T)(object)new CommonScript(x, Context);
+                    var script = new GM8Script();
+                    list.Add(script);
+                    return (T)(object)new CommonScript(script, Context);
                 }
             case List<GM8Object?> list:
                 {
-                    var x = new GM8Object();
-                    list.Add(x);
-                    return (T)(object)new CommonObject(x, Context);
+                    var obj = new GM8Object();
+                    list.Add(obj);
+                    return (T)(object)new CommonObject(obj, Context);
                 }
 
             // GMS
             case IList<UndertaleSprite?> list:
                 {
-                    var x = new UndertaleSprite();
-                    list.Add(x);
-                    return (T)(object)new CommonSprite(x, Context);
+                    var sprite = new UndertaleSprite();
+                    list.Add(sprite);
+                    return (T)(object)new CommonSprite(sprite, Context);
                 }
             case IList<UndertaleScript?> list:
                 {
-                    var x = new UndertaleScript();
-                    list.Add(x);
-                    return (T)(object)new CommonScript(x, Context);
+                    var script = new UndertaleScript();
+                    script.Code = UndertaleCode.CreateEmptyEntry(Context.UndertaleData, $"gml_Script_{Random.Shared.NextInt64()}");
+                    list.Add(script);
+                    return (T)(object)new CommonScript(script, Context);
                 }
             case IList<UndertaleGameObject?> list:
                 {
-                    var x = new UndertaleGameObject();
-                    list.Add(x);
-                    return (T)(object)new CommonObject(x, Context);
+                    var obj = new UndertaleGameObject();
+                    list.Add(obj);
+                    return (T)(object)new CommonObject(obj, Context);
                 }
 
             default:
