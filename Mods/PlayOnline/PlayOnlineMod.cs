@@ -206,6 +206,10 @@ public class PlayOnlineMod : Mod
                 soundPlay.Name = "po_sound_play";
                 soundPlay.Source = GetCode("po_sound_play_GM8.gml");
 
+                CommonScript fontAdd = CommonData.Scripts.CreateNew();
+                fontAdd.Name = "po_font_add";
+                fontAdd.Source = GetCode("po_font_add_GM8.gml");
+
                 CopyFileToRunningDirectory("po_snd_chatbox.wav");
                 CopyFileToRunningDirectory("po_snd_saved.wav");
             }
@@ -221,8 +225,13 @@ public class PlayOnlineMod : Mod
                 soundPlay.Name = "po_sound_play";
                 soundPlay.Source = GetCode("po_sound_play_GMS.gml");
 
+                CommonScript fontAdd = CommonData.Scripts.CreateNew();
+                fontAdd.Name = "po_font_add";
+                fontAdd.Source = GetCode("po_font_add_GMS.gml");
+
                 CopyFileToRunningDirectory("po_snd_chatbox.ogg");
                 CopyFileToRunningDirectory("po_snd_saved.ogg");
+                CopyFileToRunningDirectory("arial.ttf");
             }
         }
     }

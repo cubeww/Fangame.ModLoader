@@ -23,3 +23,6 @@ po_sound_add_GM8.gml
 po_sound_add_GMS.gml
 po_sound_play_GM8.gml
 po_sound_play_GMS.gml
+po_font_add_GM8.gml
+po_font_add_GMS.gml
+arial.ttf

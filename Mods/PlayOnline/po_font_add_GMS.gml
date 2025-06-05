@@ -1,0 +1,1 @@
+return font_add(argument0 + ".ttf", 12, false, false, 32, 127);
