@@ -1,0 +1,1 @@
+return asset_get_index(argument0);

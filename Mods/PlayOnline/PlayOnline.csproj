@@ -16,4 +16,8 @@
 	  <ProjectReference Include="..\..\Fangame.ModLoader\Fangame.ModLoader.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="GML\Config\" />
+	</ItemGroup>
+
 </Project>

@@ -1,1 +1,0 @@
-return font_add(argument0, 12, false, false, 32, 127);

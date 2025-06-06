@@ -1,1 +1,0 @@
-return sound_add(argument0 + ".wav", 0, 0);

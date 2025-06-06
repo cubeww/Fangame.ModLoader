@@ -1,5 +1,4 @@
-/// ONLINE 
-if (global.PO_TEMP_FILE)
+if (po_use_temp_file())
 {
     if (!file_exists("temp") && !file_exists(working_directory + "\save\temp") && !file_exists("temp.dat"))
     {
@@ -12,15 +11,12 @@ if (global.PO_TEMP_FILE)
             file_delete("tempOnline2");
         }
     }
-}
 
-po_buffer_destroy(__ONLINE_buffer);
-
-if (global.PO_TEMP_FILE)
-{
     if (!file_exists("tempOnline"))
     {
-        po_socket_destroy(__ONLINE_socket);
-        po_udpsocket_destroy(__ONLINE_udpsocket);
+        po_socket_destroy(global.po_socket);
+        po_udpsocket_destroy(global.po_udpsocket);
     }
 }
+
+po_buffer_destroy(global.po_buffer);

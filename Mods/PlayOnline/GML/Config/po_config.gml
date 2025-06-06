@@ -1,0 +1,9 @@
+global.po_server = "{SERVER}";
+global.po_tcp_port = {TCP_PORT};
+global.po_udp_port = {UDP_PORT};
+global.po_race = {RACE};
+global.po_password = "{PASSWORD}";
+global.po_game_id = "{GAME_ID}" + "{PASSWORD}";
+global.po_game_name = "{GAME_NAME}";
+global.po_name = "{NAME}";
+global.po_version = "{VERSION}";

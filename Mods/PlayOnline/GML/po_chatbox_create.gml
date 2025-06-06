@@ -1,0 +1,10 @@
+padding_text = 10;
+width = 250;
+padding = 15;
+alpha = 1;
+fade = false;
+fade_alpha = 1;
+t = 70;
+sep = -1;
+max_text_width = width - 2 * padding_text;
+has_destroyed = false;
