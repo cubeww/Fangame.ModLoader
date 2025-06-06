@@ -1,20 +1,20 @@
 draw_set_font(global.po_font_playername);
 text_height = string_height_ext(message, sep, max_text_width);
 
-height = text_height + 2 * paddingText;
+height = text_height + 2 * padding_text;
 y_offset = -height / 2 + 60;
-left = 0;
-right = room_width;
+drawleft = 0;
+drawright = room_width;
 top = 0;
 bottom = room_height;
 if (view_enabled && view_visible[0])
 {
-    left = view_xview[0];
-    right = left + view_wview[0];
+    drawleft = view_xview[0];
+    drawright = drawleft + view_wview[0];
     top = view_yview[0];
     bottom = top + view_hview[0];
 }
-xx = min(max(x, left + width / 2 + padding), right - width / 2 - padding);
+xx = min(max(x, drawleft + width / 2 + padding), drawright - width / 2 - padding);
 yy = min(max(y - y_offset, top + height / 2 + padding), bottom - height / 2 - padding);
 _alpha = draw_get_alpha();
 _color = draw_get_color();

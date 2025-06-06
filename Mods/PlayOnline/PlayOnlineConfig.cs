@@ -10,7 +10,7 @@ public class PlayOnlineConfig : ModConfig
     [ReadOnly(true)]
     [Description("Convert fangame to online mode.")]
     [JsonIgnore]
-    public string Version { get; set; } = "Beta";
+    public string Version { get; set; } = "1.0.0";
 
     [Category("Server")]
     public string ServerIp { get; set; } = "iwannastartaparty.com";

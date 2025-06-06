@@ -87,7 +87,7 @@ while (po_socket_read_message(global.po_socket, global.po_buffer))
                 global.po_someone_room = po_buffer_read_int16(global.po_buffer);
                 new_player_saved = instance_create(0, 0, po_playersaved);
                 new_player_saved.name = global.po_someone_name;
-                po_temp_someonesaved_save();
+                po_temp_someonesave_save();
                 po_sound_play(global.po_snd_saved);
             }
             break;
@@ -124,7 +124,7 @@ switch (po_socket_get_state(global.po_socket))
 }
 if (must_quit)
 {
-    if (po_use_temp_file())
+    if (global.po_tempExe != -1)
     {
         if (file_exists("temp"))
         {
@@ -262,7 +262,7 @@ while (po_udpsocket_receive(global.po_udpsocket, global.po_buffer))
             }
             moved_player.cur_room = po_buffer_read_uint16(global.po_buffer);
             global.po_sync_time = po_buffer_read_uint64(global.po_buffer);
-            if (moved_player.sync_time < global.sync_time)
+            if (moved_player.sync_time < global.po_sync_time)
             {
                 moved_player.sync_time = global.po_sync_time;
                 moved_player.x = po_buffer_read_int32(global.po_buffer);

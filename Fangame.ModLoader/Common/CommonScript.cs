@@ -37,6 +37,7 @@ public class CommonScript
                     break;
                 case UndertaleScript script:
                     script.Name = Context.MakeString(value);
+                    script.Code.Name = Context.MakeString($"gml_Script_{value}");
                     break;
                 default:
                     throw new NotSupportedException();

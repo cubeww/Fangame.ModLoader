@@ -1,4 +1,4 @@
-if (po_use_temp_file())
+if (global.po_tempExe != -1)
 {
     if (!file_exists("temp") && !file_exists(working_directory + "\save\temp") && !file_exists("temp.dat"))
     {
