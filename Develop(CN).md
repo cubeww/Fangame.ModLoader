@@ -24,7 +24,7 @@ git clone --recursive https://github.com/cubeww/Fangame.ModLoader.git
 
 然后使用Visual Studio打开**Fangame.ModLoader.sln**，首先按下**Ctrl+Shift+B**构建解决方案， 再按下**F5**，应该就能看见程序正常启动了。
 
-![image-20250602154951553](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602154951553.png)
+![image-20250602154951553](.\Doc\image-20250602154951553.png)
 
 ### 创建新Mod
 
@@ -36,15 +36,15 @@ git clone --recursive https://github.com/cubeww/Fangame.ModLoader.git
 
 - files.txt 文件第一行：**CrimsonKid**.dll
 
-  ![image-20250602154541558](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602154541558.png)
+  ![image-20250602154541558](.\Doc\image-20250602154541558.png)
 
-  ![image-20250602155117608](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602155117608.png)
+  ![image-20250602155117608](.\Doc\image-20250602155117608.png)
 
 修改完毕之后，请在Visual Studio中添加CrimsonKid.csproj项目到解决方案的Mods文件夹。然后先**Ctrl+Shift+B**构建解决方案，再**F5**运行Fangame.ModLoader.Gui，你应该能看见你的Mod被正常显示到了左侧的Mod列表中。
 
-![image-20250602155555402](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602155555402.png)
+![image-20250602155555402](.\Doc\image-20250602155555402.png)
 
-![image-20250602155535930](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602155535930.png)
+![image-20250602155535930](.\Doc\image-20250602155535930.png)
 
 > 请注意，每次F5调试mod之前请务必先执行**Ctrl+Shift+B**，这样才能确保触发Mod项目的**构建后事件**，以将必要的文件复制到WorkingDirectory/Mods文件夹中。
 
@@ -105,15 +105,15 @@ public class CrimsonKidMod : Mod
 
 - 把需要复制的文件放入项目目录（与CrimsonKid.csproj同级）中
 
-  ![image-20250602162639825](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602162639825.png)
+  ![image-20250602162639825](.\Doc\image-20250602162639825.png)
 
   
 
-  ![image-20250602162733463](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602162733463.png)
+  ![image-20250602162733463](.\Doc\image-20250602162733463.png)
 
 接下来先Ctrl+Shift+B构建解决方案，再F5运行，尝试运行一个游戏，应该就能看见Mod被正常应用了。
 
-![image-20250602170012166](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602170012166.png)
+![image-20250602170012166](.\Doc\image-20250602170012166.png)
 
 当然现在只有“sprPlayerIdle”这一个精灵的图片被替换。我们只要仿照它把其它几个精灵也给一起替换即可。
 
@@ -160,7 +160,7 @@ sprBow.png
 
 这样我们就能看到kid的几张精灵都被正常替换。
 
-![image-20250602164233549](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602164233549.png)
+![image-20250602164233549](.\Doc\image-20250602164233549.png)
 
 但是还有两个小瑕疵，一是sprBow应该位于kid的后面而不是前面，而是sprBow的动画播放速度非常快，这都不是我们想要的。
 
@@ -193,7 +193,7 @@ if (bow != null)
 
 现在构建并运行游戏，即可看到图片被正常显示：
 
-![image-20250602170115792](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602170115792.png)
+![image-20250602170115792](.\Doc\image-20250602170115792.png)
 
 当然，这个Mod应该只适用于少部分游戏，因为很多游戏的kid对象名叫objPlayer而不是player（比如YoYoYo引擎）。这就需要加入一些额外的判断逻辑：
 
@@ -209,11 +209,11 @@ foreach (var obj in CommonData.Objects)
 
 现在运行一个YoYoYo引擎的游戏应该也能够正常加载：
 
-![image-20250602171301028](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602171301028.png)
+![image-20250602171301028](.\Doc\image-20250602171301028.png)
 
 这样一个简单的Kid皮肤Mod就大功告成了。现在你可以将**Repo/WorkingDirectory/CrimsonKid**文件夹打包分享给其他人了。该文件夹中应该包含这些文件：
 
-![image-20250602170524857](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250602170524857.png)
+![image-20250602170524857](.\Doc\image-20250602170524857.png)
 
 ## 配置文件
 
@@ -253,7 +253,7 @@ public class CrimsonKidMod : Mod
 
 再次调试运行，你应该能看见配置属性被显示到Config区域中。
 
-![image-20250603201534829](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250603201534829.png)
+![image-20250603201534829](.\Doc\image-20250603201534829.png)
 
 ## 高级
 

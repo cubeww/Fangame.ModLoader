@@ -2,7 +2,7 @@
 
 Fangame.ModLoader是一个C#编写的工具，可以让GameMaker编写的I wanna同人游戏支持“加载Mod”功能，例如PlayOnline、DbgHelper、Skinning...
 
-![image-20250603195856743](D:\Projects\CSharp\Fangame.ModLoader\Doc\image-20250603195856743.png)
+![image-20250603195856743](.\Doc\image-20250603195856743.png)
 
 ## 为什么？
 
