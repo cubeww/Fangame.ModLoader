@@ -211,7 +211,7 @@ foreach (var obj in CommonData.Objects)
 
 ![image-20250602171301028](Doc/image-20250602171301028.png)
 
-这样一个简单的Kid皮肤Mod就大功告成了。现在你可以将**Repo/WorkingDirectory/CrimsonKid**文件夹打包分享给其他人了。该文件夹中应该包含这些文件：
+这样一个简单的Kid皮肤Mod就大功告成了。现在你可以将**Repo/WorkingDirectory/Mods/CrimsonKid**文件夹打包分享给其他人了。该文件夹中应该包含这些文件：
 
 ![image-20250602170524857](Doc/image-20250602170524857.png)
 
@@ -234,7 +234,7 @@ public class CrimsonKidConfig : ModConfig
 
 ```
 
-为了能让程序识别，请务必将字段暴露为属性（推荐使用自动属性 { get; set; } ）。同时推荐添加Category以及Description特性以让用户界面支持显示这些信息提示（更多特性请参考[PropertyGrid](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.propertygrid)）。
+为了能让程序识别，请务必将字段暴露为属性（推荐使用自动属性 { get; set; } ）。同时推荐添加**Category**以及**Description**特性以让用户界面支持显示这些信息提示（更多特性请参考[PropertyGrid](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.propertygrid)）。
 
 要使用配置类，直接在Mod代码中调用GetConfig<TConfig>()即可。加载器会自动处理，并在文件不存在时自动帮你创建配置。
 
