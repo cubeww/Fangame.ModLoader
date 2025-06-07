@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+ <PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+                  <RunPostBuildEvent>Always</RunPostBuildEvent>
+	</PropertyGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="powershell ../copyfiles.ps1" />
+	</Target>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Fangame.ModLoader\Fangame.ModLoader.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -161,12 +161,22 @@ public class CommonSprite
                 sprite.CollisionMasks.Clear();
                 for (int i = 0; i < imageNumber; i++)
                 {
+                    sprite.Width = (uint)width;
+                    sprite.Height = (uint)height;
                     var subImage = (MagickImage)image.CloneArea(new MagickGeometry(width * i, 0, (uint)width, (uint)height));
                     UndertaleTexturePageItem item = Context.AllocTexturePageItem(width, height);
                     Context.QueueTextureReplace(item, subImage);
                     sprite.Textures.Add(new UndertaleSprite.TextureEntry { Texture = item });
                     var entry = sprite.NewMaskEntry(Context.UndertaleData);
                     entry.Data = Context.ReadMaskData(subImage);
+                    entry.Width = width;
+                    entry.Height = height;
+                    sprite.SepMasks = UndertaleSprite.SepMaskType.Precise;
+                    sprite.MarginLeft = 0;
+                    sprite.MarginRight = width - 1;
+                    sprite.MarginTop = 0;
+                    sprite.MarginBottom = height - 1;
+                    sprite.CollisionMasks.Add(entry);
                 }
                 break;
             default:

@@ -1,0 +1,4 @@
+DotKid.dll
+sprDotkidMask.png
+sprDotkidCircle.png
+sprEmpty32x32.png

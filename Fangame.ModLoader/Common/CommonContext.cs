@@ -179,9 +179,6 @@ public class CommonContext
         using IPixelCollection<byte> pixels = image.GetPixels();
         bytes = new byte[(int)((image.Width + 7) / 8 * image.Height)];
 
-        // Get white color, used to represent bits that are set
-        IMagickColor<byte> white = MagickColors.White;
-
         // Read all pixels of image, and set a bit on the mask if a given pixel matches the white color
         int i = 0;
         for (int y = 0; y < image.Height; y++)
@@ -194,7 +191,8 @@ public class CommonContext
 
                 for (int x = pxStart; x < pxEnd; x++)
                 {
-                    if (pixels.GetPixel(x, y).ToColor()!.Equals(white))
+                    bool hasPixel = pixels.GetPixel(x, y).ToColor()!.A != 0;
+                    if (hasPixel)
                     {
                         fullByte |= (byte)(0b1 << (7 - (x - pxStart)));
                     }
@@ -203,6 +201,7 @@ public class CommonContext
                 bytes[i++] = fullByte;
             }
         }
+
         return bytes;
     }
 

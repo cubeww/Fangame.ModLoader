@@ -127,6 +127,13 @@ public class GM8CollisionMask
                 }
             }
         }
+        if (BBoxLeft > BBoxRight || BBoxTop > BBoxBottom)
+        {
+            BBoxLeft = 0;
+            BBoxTop = 0;
+            BBoxRight = Width - 1;
+            BBoxBottom = Height - 1;
+        }
     }
 
     public GM8CollisionMask(GM8Stream s)

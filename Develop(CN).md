@@ -283,4 +283,4 @@ public override void Load()
 
 除了ModDirectory之外，Mod基类还有一些重要属性可以访问。它们大多取决于游戏的可执行文件类型，请参阅：
 
-[ModProperties](./ModProperties.html)
+**ModProperties.xlsx**
