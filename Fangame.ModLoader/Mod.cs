@@ -6,24 +6,24 @@ namespace Fangame.ModLoader;
 
 public abstract class Mod
 {
-    internal ModLoader ModLoader = null!;
-    internal ModManager ModManager = null!;
+    internal ModLoader _modLoader = null!;
+    internal ModManager _modManager = null!;
 
     public string ModName { get; internal set; } = null!;
     public string ModDirectory { get; internal set; } = null!;
-    public string ModsDirectory => ModManager.ModsDirectory;
-    public string RunningDirectory => ModLoader.RunningDirectory;
-    public string ExecutablePath => ModLoader.ExecutablePath;
-    public string ExecutableDirectory => ModLoader.ExecutableDirectory;
-    public string GameDataPath => ModLoader.GameDataPath;
-    public string RunningExecutablePath => ModLoader.RunningExecutablePath;
-    public string RunningGameDataPath => ModLoader.RunningGameDataPath;
-    public ExecutableEngine ExecutableEngine => ModLoader.ExecutableEngine;
-    public bool IsSingleRuntimeExecutable => ModLoader.IsSingleRuntimeExecutable;
-    public bool IsEmbeddedGameData => ModLoader.IsEmbeddedGameData;
-    public UndertaleData? UndertaleData => ModLoader.UndertaleData;
-    public GM8Data? GM8Data => ModLoader.GM8Data;
-    public CommonData? CommonData => ModLoader.CommonData;
+    public string ModsDirectory => _modManager.ModsDirectory;
+    public string RunningDirectory => _modLoader.RunningDirectory;
+    public string ExecutablePath => _modLoader.ExecutablePath;
+    public string ExecutableDirectory => _modLoader.ExecutableDirectory;
+    public string GameDataPath => _modLoader.GameDataPath;
+    public string RunningExecutablePath => _modLoader.RunningExecutablePath;
+    public string RunningGameDataPath => _modLoader.RunningGameDataPath;
+    public ExecutableEngine ExecutableEngine => _modLoader.ExecutableEngine;
+    public bool IsSingleRuntimeExecutable => _modLoader.IsSingleRuntimeExecutable;
+    public bool IsEmbeddedGameData => _modLoader.IsEmbeddedGameData;
+    public UndertaleData? UndertaleData => _modLoader.UndertaleData;
+    public GM8Data? GM8Data => _modLoader.GM8Data;
+    public CommonData? CommonData => _modLoader.CommonData;
 
     public virtual void Load()
     {
@@ -42,6 +42,6 @@ public abstract class Mod
 
     public T GetConfig<T>() where T : ModConfig
     {
-        return (T)ModManager.GetConfig(ModName)!;
+        return (T)_modManager.GetConfig(ModName)!;
     }
 }

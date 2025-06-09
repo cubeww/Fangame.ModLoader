@@ -12,13 +12,13 @@ namespace Fangame.ModLoader.Common;
 
 public class CommonContext
 {
-    public UndertaleData? UndertaleData;
-    public GlobalDecompileContext? GlobalDecompileContext;
-    public UndertaleEmbeddedTexture? TextureAtlas;
-    public GuillotineAtlasAllocator? AtlasAllocator;
-    public Dictionary<UndertaleEmbeddedTexture, List<TextureReplaceItem>>? TextureReplaceQueue;
-    public CompileGroup? CompileGroup;
-    public bool HasCodeReplace;
+    private readonly GlobalDecompileContext? _globalDecompileContext;
+    private readonly CompileGroup? _compileGroup;
+    private bool _hasCodeReplace;
+    private readonly Dictionary<UndertaleEmbeddedTexture, List<TextureReplaceItem>>? _textureReplaceQueue;
+    private UndertaleEmbeddedTexture? _textureAtlas;
+    private GuillotineAtlasAllocator? _atlasAllocator;
+    public UndertaleData? UndertaleData { get; }
 
     public struct TextureReplaceItem
     {
@@ -38,9 +38,9 @@ public class CommonContext
     public CommonContext(UndertaleData data)
     {
         UndertaleData = data;
-        GlobalDecompileContext = new GlobalDecompileContext(data);
-        CompileGroup = new CompileGroup(data, GlobalDecompileContext);
-        TextureReplaceQueue = [];
+        _globalDecompileContext = new GlobalDecompileContext(data);
+        _compileGroup = new CompileGroup(data, _globalDecompileContext);
+        _textureReplaceQueue = [];
         NewTextureAtlas();
     }
 
@@ -51,49 +51,49 @@ public class CommonContext
             return;
         }
 
-        TextureAtlas = new UndertaleEmbeddedTexture();
-        TextureAtlas.TextureData = new UndertaleEmbeddedTexture.TexData
+        _textureAtlas = new UndertaleEmbeddedTexture();
+        _textureAtlas.TextureData = new UndertaleEmbeddedTexture.TexData
         {
             Image = GMImage.FromPng(File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Empty2048x2048.png"))),
         };
-        UndertaleData.EmbeddedTextures.Add(TextureAtlas);
-        AtlasAllocator = new GuillotineAtlasAllocator(new Size(2048, 2048));
+        UndertaleData.EmbeddedTextures.Add(_textureAtlas);
+        _atlasAllocator = new GuillotineAtlasAllocator(new Size(2048, 2048));
     }
 
     public string Decompile(UndertaleCode code)
     {
-        if (GlobalDecompileContext == null)
+        if (_globalDecompileContext == null)
         {
             throw new NotSupportedException();
         }
 
-        DecompileContext decompileContext = new DecompileContext(GlobalDecompileContext, code);
+        DecompileContext decompileContext = new DecompileContext(_globalDecompileContext, code);
         return decompileContext.DecompileToString();
     }
 
     public void QueueCodeReplace(UndertaleCode code, string newCode)
     {
-        if (CompileGroup == null)
+        if (_compileGroup == null)
         {
             throw new NotSupportedException();
         }
 
-        CompileGroup.QueueCodeReplace(code, newCode);
-        HasCodeReplace = true;
+        _compileGroup.QueueCodeReplace(code, newCode);
+        _hasCodeReplace = true;
     }
 
     public UndertaleTexturePageItem AllocTexturePageItem(int width, int height)
     {
-        if (AtlasAllocator == null || UndertaleData == null)
+        if (_atlasAllocator == null || UndertaleData == null)
         {
             throw new NotSupportedException();
         }
 
-        Allocation? alloc = AtlasAllocator.Allocate(new Size(width, height));
+        Allocation? alloc = _atlasAllocator.Allocate(new Size(width, height));
         if (!alloc.HasValue)
         {
             NewTextureAtlas();
-            alloc = AtlasAllocator.Allocate(new Size(width, height));
+            alloc = _atlasAllocator.Allocate(new Size(width, height));
             if (!alloc.HasValue)
             {
                 throw new InvalidOperationException("Alloc texture failed.");
@@ -103,7 +103,7 @@ public class CommonContext
         var item = new UndertaleTexturePageItem
         {
             Name = MakeString(""),
-            TexturePage = TextureAtlas,
+            TexturePage = _textureAtlas,
             SourceX = (ushort)rect.X,
             SourceY = (ushort)rect.Y,
             SourceWidth = (ushort)rect.Width,
@@ -131,15 +131,15 @@ public class CommonContext
 
     public void QueueTextureReplace(UndertaleTexturePageItem item, MagickImage replaceImage)
     {
-        if (TextureReplaceQueue == null)
+        if (_textureReplaceQueue == null)
         {
             throw new NotSupportedException();
         }
 
-        if (!TextureReplaceQueue.TryGetValue(item.TexturePage, out var queue))
+        if (!_textureReplaceQueue.TryGetValue(item.TexturePage, out var queue))
         {
             queue = [];
-            TextureReplaceQueue[item.TexturePage] = queue;
+            _textureReplaceQueue[item.TexturePage] = queue;
         }
 
         queue.Add(new TextureReplaceItem(item, replaceImage));
@@ -147,9 +147,9 @@ public class CommonContext
 
     public void FlushReplaceQueue()
     {
-        if (TextureReplaceQueue != null)
+        if (_textureReplaceQueue != null)
         {
-            foreach (var (embTex, replaces) in TextureReplaceQueue)
+            foreach (var (embTex, replaces) in _textureReplaceQueue)
             {
                 MagickImage embImage = embTex.TextureData.Image.GetMagickImage();
                 foreach (var replace in replaces)
@@ -160,14 +160,14 @@ public class CommonContext
                 embTex.TextureData.Image = GMImage.FromMagickImage(embImage).ConvertToFormat(embTex.TextureData.Image.Format);
             }
 
-            TextureReplaceQueue.Clear();
+            _textureReplaceQueue.Clear();
         }
 
-        if (CompileGroup != null && HasCodeReplace)
+        if (_compileGroup != null && _hasCodeReplace)
         {
-            CompileResult result = CompileGroup.Compile();
+            CompileResult result = _compileGroup.Compile();
             Console.WriteLine(result.PrintAllErrors(true));
-            HasCodeReplace = false;
+            _hasCodeReplace = false;
         }
     }
 

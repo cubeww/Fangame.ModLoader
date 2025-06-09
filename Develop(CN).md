@@ -1,3 +1,5 @@
+**注：Mod API可能发生变化，以实际为准！！！**
+
 本文将从零开始制作一个更换Kid皮肤的Mod：CrimsonKid
 
 ## 准备
@@ -195,25 +197,62 @@ if (bow != null)
 
 ![image-20250602170115792](Doc/image-20250602170115792.png)
 
-当然，这个Mod应该只适用于少部分游戏，因为很多游戏的kid对象名叫objPlayer而不是player（比如YoYoYo引擎）。这就需要加入一些额外的判断逻辑：
+这样一个简单的Kid皮肤Mod就大功告成了。现在你可以将**Repo/WorkingDirectory/Mods/CrimsonKid**文件夹打包分享给其他人了。该文件夹中应该包含这些文件：
+
+![image-20250602170524857](Doc/image-20250602170524857.png)
+
+## 名称映射表
+
+这个Mod应该只适用于少部分游戏，因为游戏引擎的player对象名称不一定叫player，还可能叫objPlayer、Player等。对于简单的情况，你可以使用“或”判断逻辑，像这样：
 
 ```c#
 foreach (var obj in CommonData.Objects)
 {
-    if (obj.Name == "player" || obj.Name == "objPlayer")
+    if (obj.Name == "player" || obj.Name == "objPlayer" /* And more... */ )
         player = obj;
     if (obj.Name == "bow" || obj.Name == "objBow")
         bow = obj;
 }
 ```
 
-现在运行一个YoYoYo引擎的游戏应该也能够正常加载：
+由于Fangame的引擎数量繁多，找到每个引擎的对象名称是很繁琐的。因此Fangame.ModLoader提供了一个“NameTable”功能，可以将不同引擎的资源名称映射到一个csv文件当中。这样做的好处是你可以随时扩充/修改名称映射表，而不需要重新编译Mod。大多数情况下使用自带的**GlobalNameTable**就足够了，它位于Fangame.ModLoader/GlobalNameTable.csv，可以直接使用NameTable.Global进行访问。现在你只需要编写如下代码即可：
 
-![image-20250602171301028](Doc/image-20250602171301028.png)
+```c#
+// ...
 
-这样一个简单的Kid皮肤Mod就大功告成了。现在你可以将**Repo/WorkingDirectory/Mods/CrimsonKid**文件夹打包分享给其他人了。该文件夹中应该包含这些文件：
+foreach (var sprite in CommonData.Sprites)
+{
+    if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerIdle"))
+        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerIdle.png"), 4);
+    if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerRunning"))
+        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerRunning.png"), 4);
+    if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerJump"))
+        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerJump.png"), 2);
+    if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerFall"))
+        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerFall.png"), 2);
+    if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerSliding"))
+        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerSliding.png"), 2);
+    if (NameTable.Global.CheckIn(sprite.Name, "sprBow"))
+    {
+        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprBow.png"), 4);
+        sprite.OriginX = 22;
+        sprite.OriginY = 23;
+    }
+}
 
-![image-20250602170524857](Doc/image-20250602170524857.png)
+// ...
+
+foreach (var obj in CommonData.Objects)
+{
+    if (NameTable.Global.CheckIn(obj.Name, "objPlayer"))
+        player = obj;
+    if (NameTable.Global.CheckIn(obj.Name, "objBow"))
+        bow = obj;
+}
+
+```
+
+
 
 ## 配置文件
 
@@ -283,4 +322,4 @@ public override void Load()
 
 除了ModDirectory之外，Mod基类还有一些重要属性可以访问。它们大多取决于游戏的可执行文件类型，请参阅：
 
-**ModProperties.xlsx**
+**ModProperties.csv**

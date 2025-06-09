@@ -1,5 +1,5 @@
 ﻿namespace Fangame.ModLoader;
 
-public class ModConfig
+public abstract class ModConfig
 {
 }

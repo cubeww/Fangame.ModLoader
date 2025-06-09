@@ -5,20 +5,20 @@ namespace Fangame.ModLoader.Common;
 
 public class CommonScript
 {
-    private object Script;
-    private CommonContext Context;
+    private object _script;
+    private CommonContext _context;
 
     public CommonScript(object script, CommonContext context)
     {
-        Script = script;
-        Context = context;
+        _script = script;
+        _context = context;
     }
 
     public string Name
     {
         get
         {
-            switch (Script)
+            switch (_script)
             {
                 case GM8Script script:
                     return script.Name;
@@ -30,14 +30,14 @@ public class CommonScript
         }
         set
         {
-            switch (Script)
+            switch (_script)
             {
                 case GM8Script script:
                     script.Name = value;
                     break;
                 case UndertaleScript script:
-                    script.Name = Context.MakeString(value);
-                    script.Code.Name = Context.MakeString($"gml_Script_{value}");
+                    script.Name = _context.MakeString(value);
+                    script.Code.Name = _context.MakeString($"gml_Script_{value}");
                     break;
                 default:
                     throw new NotSupportedException();
@@ -49,25 +49,25 @@ public class CommonScript
     {
         get
         {
-            switch (Script)
+            switch (_script)
             {
                 case GM8Script script:
                     return script.Source;
                 case UndertaleScript script:
-                    return Context.Decompile(script.Code);
+                    return _context.Decompile(script.Code);
                 default:
                     throw new NotSupportedException();
             }
         }
         set
         {
-            switch (Script)
+            switch (_script)
             {
                 case GM8Script script:
                     script.Source = value;
                     break;
                 case UndertaleScript script:
-                    Context.QueueCodeReplace(script.Code, value);
+                    _context.QueueCodeReplace(script.Code, value);
                     break;
                 default:
                     throw new NotSupportedException();

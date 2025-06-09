@@ -6,20 +6,20 @@ namespace Fangame.ModLoader.Common;
 
 public class CommonSprite
 {
-    private object Sprite;
-    private CommonContext Context;
+    private object _sprite;
+    private CommonContext _context;
 
     public CommonSprite(object sprite, CommonContext context)
     {
-        Sprite = sprite;
-        Context = context;
+        _sprite = sprite;
+        _context = context;
     }
 
     public string Name
     {
         get
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     return sprite.Name;
@@ -31,13 +31,13 @@ public class CommonSprite
         }
         set
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     sprite.Name = value;
                     break;
                 case UndertaleSprite sprite:
-                    sprite.Name = Context.MakeString(value);
+                    sprite.Name = _context.MakeString(value);
                     break;
                 default:
                     throw new NotSupportedException();
@@ -49,7 +49,7 @@ public class CommonSprite
     {
         get
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     return sprite.OriginX;
@@ -61,7 +61,7 @@ public class CommonSprite
         }
         set
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     sprite.OriginX = value;
@@ -79,7 +79,7 @@ public class CommonSprite
     {
         get
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     return sprite.OriginY;
@@ -91,7 +91,7 @@ public class CommonSprite
         }
         set
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     sprite.OriginY = value;
@@ -109,7 +109,7 @@ public class CommonSprite
     {
         get
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     return sprite.SepMasks;
@@ -121,7 +121,7 @@ public class CommonSprite
         }
         set
         {
-            switch (Sprite)
+            switch (_sprite)
             {
                 case GM8Sprite sprite:
                     sprite.SepMasks = value;
@@ -142,7 +142,7 @@ public class CommonSprite
         image.Alpha(AlphaOption.Activate);
         int width = (int)(image.Width / imageNumber);
         int height = (int)image.Height;
-        switch (Sprite)
+        switch (_sprite)
         {
             case GM8Sprite sprite:
                 sprite.Images.Clear();
@@ -164,11 +164,11 @@ public class CommonSprite
                     sprite.Width = (uint)width;
                     sprite.Height = (uint)height;
                     var subImage = (MagickImage)image.CloneArea(new MagickGeometry(width * i, 0, (uint)width, (uint)height));
-                    UndertaleTexturePageItem item = Context.AllocTexturePageItem(width, height);
-                    Context.QueueTextureReplace(item, subImage);
+                    UndertaleTexturePageItem item = _context.AllocTexturePageItem(width, height);
+                    _context.QueueTextureReplace(item, subImage);
                     sprite.Textures.Add(new UndertaleSprite.TextureEntry { Texture = item });
-                    var entry = sprite.NewMaskEntry(Context.UndertaleData);
-                    entry.Data = Context.ReadMaskData(subImage);
+                    var entry = sprite.NewMaskEntry(_context.UndertaleData);
+                    entry.Data = _context.ReadMaskData(subImage);
                     entry.Width = width;
                     entry.Height = height;
                     sprite.SepMasks = UndertaleSprite.SepMaskType.Precise;

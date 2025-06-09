@@ -7,25 +7,25 @@ namespace Fangame.ModLoader;
 
 public class ModLoader
 {
-    public ModManager ModManager;
+    public ModManager ModManager { get; }
 
-    public string RunningDirectory;
-    public string ExecutablePath;
-    public string ExecutableDirectory;
-    public string GameDataPath;
-    public string RunningExecutablePath;
-    public string RunningGameDataPath;
+    public string RunningDirectory { get; }
+    public string ExecutablePath { get; private set; }
+    public string ExecutableDirectory { get; private set; }
+    public string GameDataPath { get; private set; }
+    public string RunningExecutablePath { get; private set; }
+    public string RunningGameDataPath { get; private set; }
 
-    public ExecutableEngine ExecutableEngine;
-    public bool IsSingleRuntimeExecutable;
-    public UndertaleData? UndertaleData;
-    public GM8Data? GM8Data;
-    public CommonData? CommonData;
+    public ExecutableEngine ExecutableEngine { get; private set; }
+    public bool IsSingleRuntimeExecutable { get; private set; }
+    public UndertaleData? UndertaleData { get; private set; }
+    public GM8Data? GM8Data { get; private set; }
+    public CommonData? CommonData { get; private set; }
 
-    public bool IsEmbeddedGameData;
-    public string[] ModNames;
-    public List<Mod> Mods;
-    public string RunningArguments;
+    public string[] ModNames { get; }
+    public List<Mod> Mods { get; }
+    public bool IsEmbeddedGameData { get; private set; }
+    public string RunningArguments { get; private set; }
 
     public ModLoader(string executablePath, string runningDirectory, ModManager modManager, string[] modNames)
     {
@@ -172,8 +172,8 @@ public class ModLoader
             if (ModManager.CreateInstance(modName) is { } mod)
             {
                 Mods.Add(mod);
-                mod.ModLoader = this;
-                mod.ModManager = ModManager;
+                mod._modLoader = this;
+                mod._modManager = ModManager;
                 mod.ModName = modName;
                 mod.ModDirectory = Path.Combine(ModManager.ModsDirectory, modName);
             }

@@ -5,10 +5,10 @@ namespace Fangame.ModLoader.Common;
 
 public class CommonData
 {
-    public CommonContext Context;
-    public CommonCollection<CommonSprite> Sprites;
-    public CommonCollection<CommonScript> Scripts;
-    public CommonCollection<CommonObject> Objects;
+    public CommonContext Context { get; }
+    public CommonCollection<CommonSprite> Sprites { get; }
+    public CommonCollection<CommonScript> Scripts { get; }
+    public CommonCollection<CommonObject> Objects { get; }
 
     public CommonData(GM8Data data)
     {

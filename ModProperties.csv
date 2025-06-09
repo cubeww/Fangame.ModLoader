@@ -1,0 +1,16 @@
+﻿Property Name,GM8,GMS-VM,GMS-YYC,GMS-SingleRuntime,Other
+ExecutableEngine,GameMaker8,GameMakerStudio,GameMakerStudio,GameMakerStudio,Unknown
+GM8Data,Parse($GameName.exe),null,null,null,null
+UndertaleData,null,Parse(data.win),Parse(data.win),VM/YYC,null
+CommonData,Wrap(GM8Data),Wrap(UndertaleData),null,VM/YYC,null
+IsSingleRuntimeExecutable,FALSE,FALSE,FALSE,TRUE,FALSE
+IsEmbeddedGameData,TRUE,FALSE,Mostly true,VM/YYC,FALSE
+ModsDirectory,Mods,Mods,Mods,Mods,Mods
+ModDirectory,Mods/$ModName,Mods/$ModName,Mods/$ModName,Mods/$ModName,Mods/$ModName
+ExecutablePath,$GameDir/$GameName.exe,$GameDir/$GameName.exe,$GameDir/$GameName.exe,Running/$GameName.exe,$GameDir/$GameName.exe
+ExecutableDirectory,$GameDir,$GameDir,$GameDir,Running,$GameDir
+GameDataPath,$GameDir/$GameName.exe,$GameDir/data.win,$GameDir/$GameName.exe,VM/YYC,$GameDir/$GameName.exe
+RunningDirectory,Running,Running,Running,Running,Running
+RunningGameDataPath,Running/$GameName.exe,Running/data.win,Running/$GameName.exe,VM/YYC,Running/$GameName.exe
+RunningExecutablePath,Running/$GameName.exe,Running/$GameName.exe,Running/$GameName.exe,Running/$GameName.exe,Running/$GameName.exe
+WorkingDirectory,$GameDir,$GameDir,$GameDir,Running,$GameDir

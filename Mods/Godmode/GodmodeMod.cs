@@ -10,7 +10,7 @@ public class GodModeMod : Mod
         {
             foreach (var script in CommonData.Scripts)
             {
-                if (script.Name is "scrKillPlayer" or "killPlayer" or "player_kill" or "kill_player")
+                if (NameTable.Global.CheckIn(script.Name, "scrKillPlayer"))
                 {
                     script.Source = "exit;\n" + script.Source;
                 }

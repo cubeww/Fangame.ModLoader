@@ -5,20 +5,20 @@ namespace Fangame.ModLoader.Common;
 
 public class CommonObject
 {
-    private object Obj;
-    private CommonContext Context;
+    private object _object;
+    private CommonContext _context;
 
     public CommonObject(object obj, CommonContext context)
     {
-        Obj = obj;
-        Context = context;
+        _object = obj;
+        _context = context;
     }
 
     public string Name
     {
         get
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     return obj.Name;
@@ -30,13 +30,13 @@ public class CommonObject
         }
         set
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     obj.Name = value;
                     break;
                 case UndertaleGameObject obj:
-                    obj.Name = Context.MakeString(value);
+                    obj.Name = _context.MakeString(value);
                     break;
                 default:
                     throw new NotSupportedException();
@@ -48,7 +48,7 @@ public class CommonObject
     {
         get
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     return obj.Visible;
@@ -60,7 +60,7 @@ public class CommonObject
         }
         set
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     obj.Visible = value;
@@ -78,7 +78,7 @@ public class CommonObject
     {
         get
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     return obj.Persistent;
@@ -90,7 +90,7 @@ public class CommonObject
         }
         set
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     obj.Persistent = value;
@@ -108,7 +108,7 @@ public class CommonObject
     {
         get
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     return obj.Depth;
@@ -120,7 +120,7 @@ public class CommonObject
         }
         set
         {
-            switch (Obj)
+            switch (_object)
             {
                 case GM8Object obj:
                     obj.Depth = value;
@@ -136,16 +136,16 @@ public class CommonObject
 
     public void EventAddCode(EventType ev, int subtype, string code)
     {
-        switch (Obj)
+        switch (_object)
         {
             case GM8Object obj:
                 obj.GetEventOrAdd((GM8ObjectEventType)ev, subtype).AddCode(code);
                 break;
             case UndertaleGameObject obj:
-                UndertaleCode undertaleCode = obj.EventHandlerFor(ev, (uint)subtype, Context.UndertaleData);
-                string originalCode = Context.Decompile(undertaleCode);
+                UndertaleCode undertaleCode = obj.EventHandlerFor(ev, (uint)subtype, _context.UndertaleData);
+                string originalCode = _context.Decompile(undertaleCode);
                 string newCode = originalCode + code;
-                Context.QueueCodeReplace(undertaleCode, newCode);
+                _context.QueueCodeReplace(undertaleCode, newCode);
                 break;
             default:
                 throw new NotSupportedException();

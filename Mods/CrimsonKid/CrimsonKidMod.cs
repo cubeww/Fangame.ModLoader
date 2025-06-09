@@ -14,17 +14,17 @@ public class CrimsonKidMod : Mod
         {
             foreach (var sprite in CommonData.Sprites)
             {
-                if (sprite.Name == "sprPlayerIdle")
+                if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerIdle"))
                     sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerIdle.png"), 4);
-                if (sprite.Name == "sprPlayerRunning")
+                if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerRunning"))
                     sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerRunning.png"), 4);
-                if (sprite.Name == "sprPlayerJump")
+                if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerJump"))
                     sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerJump.png"), 2);
-                if (sprite.Name == "sprPlayerFall")
+                if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerFall"))
                     sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerFall.png"), 2);
-                if (sprite.Name == "sprPlayerSliding")
+                if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerSliding"))
                     sprite.ReplaceImages(Path.Combine(ModDirectory, "sprPlayerSliding.png"), 2);
-                if (sprite.Name == "sprBow")
+                if (NameTable.Global.CheckIn(sprite.Name, "sprBow"))
                 {
                     sprite.ReplaceImages(Path.Combine(ModDirectory, "sprBow.png"), 4);
                     sprite.OriginX = 22;
@@ -37,9 +37,9 @@ public class CrimsonKidMod : Mod
 
             foreach (var obj in CommonData.Objects)
             {
-                if (obj.Name == "player" || obj.Name == "objPlayer")
+                if (NameTable.Global.CheckIn(obj.Name, "objPlayer"))
                     player = obj;
-                if (obj.Name == "bow" || obj.Name == "objBow")
+                if (NameTable.Global.CheckIn(obj.Name, "objBow"))
                     bow = obj;
             }
 

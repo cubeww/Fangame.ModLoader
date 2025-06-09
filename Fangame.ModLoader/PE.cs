@@ -170,8 +170,6 @@ public unsafe static class PE
         return 0;
     }
 
-
-
     public static string[] GetImportNames(string path)
     {
         using var file = File.OpenRead(path);

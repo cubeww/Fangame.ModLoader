@@ -6,8 +6,8 @@ namespace Fangame.ModLoader;
 
 public class ModManager
 {
-    public string ModsDirectory;
-    Dictionary<string, ModAssembly> Assemblies;
+    private readonly Dictionary<string, ModAssembly> _assemblies;
+    public string ModsDirectory { get; }
 
     public ModManager(string modsDirectory)
     {
@@ -17,17 +17,17 @@ public class ModManager
             Directory.CreateDirectory(modsDirectory);
         }
 
-        Assemblies = [];
+        _assemblies = [];
         foreach (var modDirectory in Directory.EnumerateDirectories(modsDirectory))
         {
             string modName = Path.GetFileName(modDirectory);
-            Assemblies[modName] = new ModAssembly(modDirectory);
+            _assemblies[modName] = new ModAssembly(modDirectory);
         }
     }
 
     public Mod? CreateInstance(string modName)
     {
-        if (Assemblies.TryGetValue(modName, out var assembly))
+        if (_assemblies.TryGetValue(modName, out var assembly))
         {
             return assembly.CreateInstance();
         }
@@ -36,7 +36,7 @@ public class ModManager
 
     public void SaveConfig(string modName)
     {
-        if (Assemblies.TryGetValue(modName, out var assembly))
+        if (_assemblies.TryGetValue(modName, out var assembly))
         {
             assembly.SaveConfig();
         }
@@ -44,7 +44,7 @@ public class ModManager
 
     public ModConfig? GetConfig(string modName)
     {
-        if (Assemblies.TryGetValue(modName, out var assembly))
+        if (_assemblies.TryGetValue(modName, out var assembly))
         {
             return assembly.GetConfig();
         }
@@ -53,7 +53,7 @@ public class ModManager
 
     public string[] GetModNames()
     {
-        return Assemblies.Keys.ToArray();
+        return _assemblies.Keys.ToArray();
     }
 
     class ModAssembly

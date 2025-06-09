@@ -14,18 +14,17 @@ public class DotKidMod : Mod
 
             foreach (var sprite in CommonData.Sprites)
             {
-                switch (sprite.Name)
+                if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerMask"))
                 {
-                    case "maskPlayer" or "maskPlayer2" or "sprPlayerMask" or "sprPlayerMaskFlip" or "sprMaskPlayer" or "sprMaskPlayerFlip":
-                        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprDotkidMask.png"), 1);
-                        sprite.OriginX = 16;
-                        sprite.OriginY = 16;
-                        break;
-                    case "sprPlayerIdle" or "sprPlayerRun" or "sprPlayerRunning" or "sprPlayerJump" or "sprPlayerFall" or "sprPlayerSlide" or "sprPlayerSliding" or "sprBow":
-                        sprite.ReplaceImages(Path.Combine(ModDirectory, "sprEmpty32x32.png"), 1);
-                        sprite.OriginX = 16;
-                        sprite.OriginY = 16;
-                        break;
+                    sprite.ReplaceImages(Path.Combine(ModDirectory, "sprDotkidMask.png"), 1);
+                    sprite.OriginX = 16;
+                    sprite.OriginY = 16;
+                }
+                if (NameTable.Global.CheckIn(sprite.Name, "sprPlayerIdle", "sprPlayerRunning", "sprPlayerJump", "sprPlayerFall", "sprPlayerSliding"))
+                {
+                    sprite.ReplaceImages(Path.Combine(ModDirectory, "sprEmpty32x32.png"), 1);
+                    sprite.OriginX = 16;
+                    sprite.OriginY = 16;
                 }
             }
 
@@ -48,14 +47,11 @@ public class DotKidMod : Mod
 
             foreach (var obj in CommonData.Objects)
             {
-                switch (obj.Name)
+                if (NameTable.Global.CheckIn(obj.Name, "objPlayer"))
                 {
-                    case "player" or "objPlayer" or "Player":
-                        obj.EventAddCode(EventType.Draw, 0, code);
-                        break;
+                    obj.EventAddCode(EventType.Draw, 0, code);
                 }
             }
-
         }
     }
 }
